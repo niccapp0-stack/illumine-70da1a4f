@@ -889,7 +889,7 @@ function showInsight(n){
    ========================================================= */
 const getKey   = ()=> localStorage.getItem('ill_apikey')||'';
 const setKey   = v => v ? localStorage.setItem('ill_apikey',v) : localStorage.removeItem('ill_apikey');
-const getModel = ()=> localStorage.getItem('ill_model')||'claude-opus-4-8';
+const getModel = ()=> localStorage.getItem('ill_model')||'claude-sonnet-5';
 const setModel = v => localStorage.setItem('ill_model',v);
 
 async function callClaude({system, user, max_tokens=1024, model}){
@@ -940,9 +940,9 @@ function renderAICompanion(n){
       <input id="keyInput" type="password" placeholder="Paste your Anthropic API key (sk-ant-…)" style="width:100%"/>
       <div class="row" style="margin-top:8px;align-items:center;flex-wrap:nowrap">
         <select id="modelSel" style="flex:1;min-width:0">
+          <option value="claude-sonnet-5">Sonnet 5 — balanced (recommended)</option>
+          <option value="claude-haiku-4-5">Haiku 4.5 — cheapest</option>
           <option value="claude-opus-4-8">Opus 4.8 — smartest</option>
-          <option value="claude-sonnet-4-6">Sonnet 4.6 — balanced</option>
-          <option value="claude-haiku-4-5">Haiku 4.5 — fastest</option>
         </select>
         <button class="btn primary" id="keySave">Connect</button>
       </div>
