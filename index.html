@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Illumine — Bible Study, brought to life</title>
+<meta name="theme-color" content="#34315e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Illumine" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+<link rel="icon" type="image/png" href="icon-192.png" />
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjogIklsbHVtaW5lIOKAlCBCaWJsZSBTdHVkeSIsICJzaG9ydF9uYW1lIjogIklsbHVtaW5lIiwgInN0YXJ0X3VybCI6ICJodHRwczovL25pY2NhcHAwLXN0YWNrLmdpdGh1Yi5pby9pbGx1bWluZS03MGRhMWE0Zi8iLCAic2NvcGUiOiAiaHR0cHM6Ly9uaWNjYXBwMC1zdGFjay5naXRodWIuaW8vaWxsdW1pbmUtNzBkYTFhNGYvIiwgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsICJiYWNrZ3JvdW5kX2NvbG9yIjogIiNmNmYxZTciLCAidGhlbWVfY29sb3IiOiAiIzM0MzE1ZSIsICJpY29ucyI6IFt7InNyYyI6ICJodHRwczovL25pY2NhcHAwLXN0YWNrLmdpdGh1Yi5pby9pbGx1bWluZS03MGRhMWE0Zi9pY29uLTE5Mi5wbmciLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3BuZyJ9LCB7InNyYyI6ICJodHRwczovL25pY2NhcHAwLXN0YWNrLmdpdGh1Yi5pby9pbGx1bWluZS03MGRhMWE0Zi9pY29uLTUxMi5wbmciLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSJ9LCB7InNyYyI6ICJodHRwczovL25pY2NhcHAwLXN0YWNrLmdpdGh1Yi5pby9pbGx1bWluZS03MGRhMWE0Zi9pY29uLTUxMi5wbmciLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogIm1hc2thYmxlIn1dfQ==" />
+<style>
+  :root{
+    --parchment:#f6f1e7; --parchment-2:#efe7d6; --ink:#2b2420; --muted:#7c7163;
+    --indigo:#34315e; --indigo-2:#4a467f; --gold:#c79a3e; --gold-soft:#e7d3a1;
+    --burgundy:#7a2f3a; --teal:#2f6f6a; --line:#e0d6c2; --card:#fffdf8;
+    --hl-yellow:#ffe9a8; --hl-green:#c9e7c0; --hl-blue:#bcd9ef; --hl-pink:#f2c9d4;
+    --shadow:0 10px 30px rgba(43,36,32,.12);
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--parchment);
+    background-image:radial-gradient(circle at 20% 0%, #fbf7ee 0%, var(--parchment) 55%);
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- Top bar ---------- */
+  header.topbar{
+    position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:14px;
+    padding:12px 20px; background:rgba(246,241,231,.85); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--serif); font-weight:700; font-size:20px; color:var(--indigo); letter-spacing:.3px;}
+  .brand .mark{width:30px;height:30px;flex:0 0 auto}
+  nav.tabs{display:flex; gap:4px; margin-left:auto; flex-wrap:wrap}
+  nav.tabs button{
+    border:0; background:transparent; font:inherit; font-weight:600; color:var(--muted);
+    padding:8px 14px; border-radius:999px; cursor:pointer; transition:.15s;
+  }
+  nav.tabs button:hover{color:var(--ink); background:#fff8;}
+  nav.tabs button.active{color:#fff; background:var(--indigo);}
+  .pill{font-size:11px; font-weight:700; color:var(--burgundy); background:#fff; border:1px solid var(--line); padding:3px 9px; border-radius:999px;}
+
+  main{max-width:1180px; margin:0 auto; padding:26px 20px 80px;}
+  .view{display:none; animation:fade .35s ease;}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+  h1.page{font-family:var(--serif); font-size:30px; margin:6px 0 4px; color:var(--indigo);}
+  p.lede{color:var(--muted); margin:0 0 22px; max-width:680px; line-height:1.5;}
+
+  /* ---------- Library cards ---------- */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:18px;}
+  .pcard{
+    background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden;
+    cursor:pointer; box-shadow:var(--shadow); transition:.18s; display:flex; flex-direction:column;
+  }
+  .pcard:hover{transform:translateY(-4px); box-shadow:0 16px 38px rgba(43,36,32,.18);}
+  .pcard .art{height:130px; position:relative}
+  .pcard .meta{padding:14px 16px 18px}
+  .pcard .tag{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--gold);}
+  .pcard h3{font-family:var(--serif); margin:4px 0 6px; font-size:21px; color:var(--ink);}
+  .pcard p{margin:0; color:var(--muted); font-size:13.5px; line-height:1.5;}
+
+  /* ---------- Reader ---------- */
+  .reader-wrap{display:grid; grid-template-columns:1fr 400px; gap:26px; align-items:start;}
+  @media(max-width:900px){ .reader-wrap{grid-template-columns:1fr} }
+  .reader{background:var(--card); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); padding:30px 34px;}
+  .reader .crumb{display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+  .reader .crumb button{border:0;background:transparent;color:var(--indigo);font:inherit;font-weight:600;cursor:pointer;padding:0;}
+  .reader h2{font-family:var(--serif); font-size:28px; margin:6px 0 2px;}
+  .reader .sub{color:var(--muted); font-size:13.5px; margin-bottom:14px;}
+  .controls{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:10px 0 22px; padding-bottom:18px; border-bottom:1px dashed var(--line);}
+  .seg{display:inline-flex; background:var(--parchment-2); border-radius:999px; padding:3px;}
+  .seg button{border:0;background:transparent;font:inherit;font-weight:600;font-size:13px;color:var(--muted);padding:6px 13px;border-radius:999px;cursor:pointer}
+  .seg button.active{background:#fff;color:var(--indigo);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .hint{font-size:12.5px;color:var(--muted);margin-left:auto}
+  .swatches{display:flex;gap:6px;align-items:center}
+  .sw{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+
+  .scripture{font-family:var(--serif); font-size:21px; line-height:1.95; color:#241f1b;}
+  .scripture.simple{font-family:var(--sans); font-size:18.5px; line-height:1.85;}
+  .v{cursor:pointer; padding:1px 3px; border-radius:5px; transition:background .12s; position:relative;}
+  .v:hover{background:#fbeecb}
+  .v .vn{font-family:var(--sans); font-size:11px; font-weight:700; color:var(--gold); vertical-align:super; margin-right:3px; user-select:none;}
+  .v.active{background:var(--gold-soft); box-shadow:inset 0 0 0 1px var(--gold);}
+  .v[data-note]::after{content:"✎"; font-size:12px; color:var(--burgundy); margin-left:3px;}
+  .v.hl-yellow{background:var(--hl-yellow)} .v.hl-green{background:var(--hl-green)}
+  .v.hl-blue{background:var(--hl-blue)} .v.hl-pink{background:var(--hl-pink)}
+
+  /* ---------- Insight panel ---------- */
+  .panel{position:sticky; top:78px; background:var(--card); border:1px solid var(--line); border-radius:20px; box-shadow:var(--shadow); overflow:hidden; max-height:calc(100vh - 100px); display:flex; flex-direction:column;}
+  .panel .phead{padding:16px 18px; background:linear-gradient(135deg,var(--indigo),var(--indigo-2)); color:#fff;}
+  .panel .phead .k{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--gold-soft);font-weight:700}
+  .panel .phead h4{margin:3px 0 0;font-family:var(--serif);font-size:20px;font-weight:600}
+  .panel .pbody{padding:4px 18px 20px; overflow:auto;}
+  .panel.empty .pbody{color:var(--muted); padding:34px 22px; text-align:center;}
+  .sec{padding:16px 0; border-bottom:1px solid var(--line);}
+  .sec:last-child{border-bottom:0}
+  .sec .lbl{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--indigo);margin-bottom:8px}
+  .sec .lbl .ic{width:16px;height:16px}
+  .sec p{margin:0 0 8px;font-size:14.5px;line-height:1.6;color:#3a322c}
+  .qs{list-style:none;margin:0;padding:0}
+  .qs li{background:var(--parchment-2);border-left:3px solid var(--gold);padding:9px 12px;border-radius:0 8px 8px 0;margin-bottom:8px;font-size:14px;line-height:1.5}
+  .xref{display:inline-block;font-size:12.5px;font-weight:600;color:var(--teal);background:#eaf4f3;border:1px solid #cfe7e4;padding:4px 9px;border-radius:7px;margin:0 6px 6px 0;text-decoration:none}
+  .cite{font-size:11.5px;color:var(--muted);line-height:1.5;background:#fbf6ea;border:1px solid var(--line);border-radius:9px;padding:9px 11px;display:flex;gap:8px}
+  .cite .ic{flex:0 0 auto;width:16px;height:16px;margin-top:1px}
+  .illus{width:100%;border-radius:12px;border:1px solid var(--line);display:block;background:#fff}
+  .mapcaption{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+
+  /* note box */
+  .notebox{margin-top:6px}
+  .notebox textarea{width:100%;min-height:64px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:14px;resize:vertical;background:#fffdf8}
+  .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  .btn{border:0;border-radius:9px;font:inherit;font-weight:700;font-size:13.5px;padding:9px 14px;cursor:pointer}
+  .btn.primary{background:var(--indigo);color:#fff}
+  .btn.ghost{background:#fff;color:var(--indigo);border:1px solid var(--line)}
+  .btn.gold{background:var(--gold);color:#3a2c08}
+  .btn:hover{filter:brightness(1.05)}
+
+  /* ---------- AI companion ---------- */
+  .ai{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:#fbf7ee;padding:14px}
+  .ai .aihead{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--indigo);font-size:14px;margin-bottom:6px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font-size:12.5px;font-weight:600;color:var(--indigo);cursor:pointer}
+  .chip:hover{background:var(--indigo);color:#fff}
+  .ai .answer{font-size:14px;line-height:1.6;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-top:8px;display:none}
+  .ai .answer.show{display:block}
+  .ai .disc{font-size:11px;color:var(--muted);margin-top:8px}
+  .ai .disc a, .ai .answer a{color:var(--teal);font-weight:600}
+  .airow{display:flex;gap:7px;margin-top:8px}
+  .airow input{flex:1;min-width:0;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit;font-size:14px;background:#fff}
+  .connect input,.connect select{font:inherit;font-size:13.5px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink)}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);border-top-color:var(--indigo);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:6px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .builder-note{font-size:12.5px;color:var(--muted);margin:12px 2px 0;line-height:1.5}
+  .builder-note em{color:var(--burgundy);font-style:normal;font-weight:600}
+
+  /* ---------- Notes & community ---------- */
+  .list{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  .ncard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+  .ncard .ref{font-family:var(--serif);font-weight:700;color:var(--indigo);font-size:16px}
+  .ncard .vtext{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:14px;margin:6px 0;line-height:1.5}
+  .ncard .body{font-size:14.5px;line-height:1.6;margin-top:6px}
+  .ncard .foot{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+  .avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+  .react{margin-left:auto;display:flex;gap:10px}
+  .react button{border:0;background:transparent;cursor:pointer;color:var(--muted);font:inherit;font-size:12.5px;font-weight:600;display:flex;gap:4px;align-items:center}
+  .react button:hover{color:var(--burgundy)}
+  .empty-state{text-align:center;color:var(--muted);padding:50px 20px;font-size:15px}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--indigo);color:#fff;padding:12px 20px;border-radius:12px;box-shadow:var(--shadow);font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:60}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer.foot{max-width:1180px;margin:0 auto;padding:20px;color:var(--muted);font-size:12.5px;text-align:center;border-top:1px solid var(--line)}
+  .kpi{display:inline-flex;gap:6px;align-items:center}
+
+  /* identity + modal */
+  .namechip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:inherit;font-size:12.5px;font-weight:700;color:var(--indigo);cursor:pointer}
+  .namechip:hover{border-color:var(--gold)}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:#bbb}
+  .sync-dot.on{background:#3aa76d}
+  .modal-bg{position:fixed;inset:0;background:rgba(43,36,32,.45);backdrop-filter:blur(3px);display:none;place-items:center;z-index:80}
+  .modal-bg.show{display:grid}
+  .modal{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:26px 28px;max-width:380px;width:90%}
+  .modal h3{font-family:var(--serif);font-size:22px;color:var(--indigo);margin:0 0 6px}
+  .modal p{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.5}
+  .modal input{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;font-size:15px;background:#fffdf8;margin-bottom:12px}
+
+  /* ---------- Session builder ---------- */
+  .builder{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:24px 26px;max-width:840px}
+  .bstep{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+  .bnum{width:26px;height:26px;border-radius:50%;background:var(--indigo);color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center;flex:0 0 auto}
+  .btitle{font-family:var(--serif);font-size:19px;color:var(--ink)}
+  .seg.big{flex-wrap:wrap;gap:6px}
+  .seg.big button{font-size:14px;padding:9px 16px}
+  .pick{margin-top:16px}
+  .pick .row2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .pick select,.pick input[type=text]{font:inherit;font-size:14.5px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fffdf8;min-width:230px}
+  .pick .or{color:var(--muted);font-size:13px;font-weight:600}
+  .charchips{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+  .charchip{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:9px 13px 9px 9px;cursor:pointer;transition:.15s;width:240px}
+  .charchip:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow)}
+  .charchip.sel{border-color:var(--indigo);box-shadow:0 0 0 2px var(--indigo) inset}
+  .charchip .cav{width:42px;height:42px;border-radius:11px;overflow:hidden;flex:0 0 auto;border:1px solid var(--line)}
+  .charchip .cav svg{width:100%;height:100%;display:block}
+  .charchip .cn{font-family:var(--serif);font-weight:700;font-size:15.5px;line-height:1.1}
+  .charchip .ce{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .opts{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px}
+  .optgroup{display:flex;flex-direction:column;gap:6px}
+  .optlbl{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .big-btn{margin-top:24px;font-size:16px;padding:13px 22px;border-radius:12px;width:100%}
+
+  /* ---------- Session output ---------- */
+  .session{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);margin-top:26px;overflow:hidden;animation:fade .4s ease}
+  .session .shead{background:linear-gradient(135deg,var(--indigo),var(--burgundy));color:#fff;padding:24px 28px;position:relative}
+  .session .shead .kick{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--gold-soft)}
+  .session .shead h2{font-family:var(--serif);font-size:27px;margin:5px 0 10px}
+  .session .badges{display:flex;flex-wrap:wrap;gap:7px}
+  .session .badge{font-size:11.5px;font-weight:700;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:4px 10px;border-radius:999px}
+  .sbody{padding:8px 28px 26px}
+  .sblock{padding:18px 0;border-bottom:1px solid var(--line)}
+  .sblock:last-child{border-bottom:0}
+  .sblock .h{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--indigo);margin-bottom:9px}
+  .sblock .h .ic{width:17px;height:17px}
+  .sblock p{margin:0;font-size:15px;line-height:1.65;color:#352e28}
+  .bigidea{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--burgundy);line-height:1.55}
+  .readitem{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .readitem:last-child{border-bottom:0}
+  .readitem .rref{font-weight:800;color:var(--teal);cursor:pointer;white-space:nowrap}
+  .readitem .rref:hover{text-decoration:underline}
+  .readitem .rnote{font-size:13.5px;color:var(--muted)}
+  .qlist{list-style:none;margin:0;padding:0;counter-reset:q}
+  .qlist li{position:relative;padding:8px 0 8px 30px;font-size:14.5px;line-height:1.55;border-bottom:1px dashed var(--line)}
+  .qlist li:last-child{border-bottom:0}
+  .qlist li::before{counter-increment:q;content:counter(q);position:absolute;left:0;top:7px;width:20px;height:20px;background:var(--gold-soft);color:#6b4e12;font-size:11px;font-weight:800;border-radius:50%;display:grid;place-items:center}
+  .qcols{display:grid;grid-template-columns:1fr;gap:0}
+  .pray{background:#f3eee2;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:12px 14px;font-size:14.5px;line-height:1.6;font-style:italic;color:#4a4136}
+  .grouptip{background:#eaf4f3;border:1px solid #cfe7e4;border-radius:10px;padding:11px 13px;font-size:13.5px;color:#2a4f4b;margin-top:6px}
+  .sactions{display:flex;gap:9px;flex-wrap:wrap;padding:16px 28px;background:var(--parchment-2);border-top:1px solid var(--line)}
+  .genwarn{font-size:12px;color:var(--muted);background:#fbf6ea;border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin-top:4px;display:flex;gap:8px}
+  .savedrow{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  @media print{ header.topbar,nav.tabs,.builder,.sactions,footer,.tabs{display:none!important} .session{box-shadow:none;border:0} }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" fill="#34315e"/><path d="M24 10c-5 4-9 4-12 4v13c0 6 5 9 12 13 7-4 12-7 12-13V14c-3 0-7 0-12-4z" fill="#c79a3e"/><path d="M24 16v18M16 23h16" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>
+    Illumine
+  </div>
+  <nav class="tabs">
+    <button data-go="library" class="active">📖 Library</button>
+    <button data-go="reader">✨ Study</button>
+    <button data-go="create">🛠️ Create Session</button>
+    <button data-go="notes">✎ My Notes</button>
+    <button data-go="community">👥 Community</button>
+  </nav>
+  <button class="namechip" id="nameChip" title="Who's studying?"><span class="sync-dot" id="syncDot"></span> 👤 <span id="nameLabel">Set name</span></button>
+</header>
+
+<div class="modal-bg" id="nameModal">
+  <div class="modal">
+    <h3>Who's studying?</h3>
+    <p>Pop in your name so your shared reflections are labelled. It's just the two of you here.</p>
+    <input id="nameInput" placeholder="Your name (e.g. Nic)" autocomplete="off"/>
+    <button class="btn primary" id="nameSave" style="width:100%">Start studying ✨</button>
+  </div>
+</div>
+
+<main>
+  <!-- ============ LIBRARY ============ -->
+  <section class="view active" id="library">
+    <h1 class="page">Step inside the story.</h1>
+    <p class="lede">Every chapter comes alive with plain-English meaning, historical context, maps of where it really happened, and questions that make you think. Pick a passage to begin — no Bible knowledge required.</p>
+    <div class="grid" id="libGrid"></div>
+  </section>
+
+  <!-- ============ READER ============ -->
+  <section class="view" id="reader">
+    <div class="reader-wrap">
+      <div class="reader">
+        <div class="crumb"><button data-go="library">← Library</button></div>
+        <h2 id="rTitle">—</h2>
+        <div class="sub" id="rSub">—</div>
+
+        <div class="controls">
+          <div class="seg" id="levelSeg">
+            <button data-level="scripture" class="active">Scripture</button>
+            <button data-level="simple">Plain English</button>
+          </div>
+          <div class="swatches" title="Pick a highlighter, then tap a verse">
+            <span class="sw" style="background:var(--hl-yellow)" data-hl="hl-yellow"></span>
+            <span class="sw" style="background:var(--hl-green)" data-hl="hl-green"></span>
+            <span class="sw" style="background:var(--hl-blue)" data-hl="hl-blue"></span>
+            <span class="sw" style="background:var(--hl-pink)" data-hl="hl-pink"></span>
+            <span class="sw" style="background:#fff" data-hl="" title="Erase"></span>
+          </div>
+          <button class="btn ghost" id="readAloud" style="padding:6px 12px;font-size:13px">🔊 Read aloud</button>
+          <span class="hint">👆 Tap any verse for insight</span>
+        </div>
+
+        <div class="scripture" id="scripture"></div>
+      </div>
+
+      <aside class="panel empty" id="panel">
+        <div class="pbody" id="panelBody">
+          <p style="font-size:40px;margin:0">✨</p>
+          <p>Tap a verse to reveal its meaning, history, a map of the place, and questions to reflect on.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ NOTES ============ -->
+  <section class="view" id="notes">
+    <h1 class="page">My Notes &amp; Highlights</h1>
+    <p class="lede">Everything you save lives here. Tap a note to jump back to the verse.</p>
+    <div class="list" id="notesList"></div>
+  </section>
+
+  <!-- ============ COMMUNITY ============ -->
+  <section class="view" id="community">
+    <h1 class="page">Community Insights</h1>
+    <p class="lede">See how others are wrestling with the same verses. Share your own reflection from any verse's insight panel and it appears here.</p>
+    <div class="list" id="commList"></div>
+  </section>
+
+  <!-- ============ CREATE SESSION ============ -->
+  <section class="view" id="create">
+    <h1 class="page">Create a Bible study session</h1>
+    <p class="lede">Build a ready-to-lead study in seconds — from a whole chapter, a passage, a single verse, or the life of a Bible character. Perfect for personal devotions, a small group, or a family around the table.</p>
+
+    <div class="builder">
+      <div class="bstep">
+        <div class="bnum">1</div><div class="btitle">What do you want to study?</div>
+      </div>
+      <div class="seg big" id="modeSeg">
+        <button data-mode="chapter" class="active">📖 Chapter</button>
+        <button data-mode="passage">📜 Passage</button>
+        <button data-mode="verse">🔹 Verse</button>
+        <button data-mode="character">🧍 Character</button>
+      </div>
+
+      <div id="modePick" class="pick"></div>
+
+      <div class="bstep" style="margin-top:22px">
+        <div class="bnum">2</div><div class="btitle">Shape the session <span style="font-weight:500;color:var(--muted)">(optional)</span></div>
+      </div>
+      <div class="opts">
+        <div class="optgroup"><span class="optlbl">Length</span>
+          <div class="seg" data-opt="length">
+            <button data-val="Quick · 15 min" class="active">Quick</button>
+            <button data-val="Standard · 30 min">Standard</button>
+            <button data-val="Deep dive · 45 min">Deep dive</button>
+          </div>
+        </div>
+        <div class="optgroup"><span class="optlbl">Setting</span>
+          <div class="seg" data-opt="setting">
+            <button data-val="Personal" class="active">Solo</button>
+            <button data-val="Small group">Small group</button>
+            <button data-val="Family / kids">Family</button>
+          </div>
+        </div>
+        <div class="optgroup"><span class="optlbl">Focus</span>
+          <div class="seg" data-opt="focus">
+            <button data-val="Devotional" class="active">Devotional</button>
+            <button data-val="Historical">Historical</button>
+            <button data-val="Application">Application</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn primary big-btn" id="genBtn">✨ Build my study session</button>
+      <p class="builder-note">Built-in passages and characters use hand-written, source-checked studies. <em>Type any other reference or name</em> and — once you've connected Claude in the ✨ Study tab — Illumine will generate a full, cited study for it live.</p>
+    </div>
+
+    <div id="sessionOut"></div>
+
+    <div id="savedWrap" style="margin-top:30px"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  Illumine · interactive prototype · Scripture: World English Bible (public domain) ·
+  AI insights are study aids, not a substitute for Scripture, prayer, or a pastor.
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   SHARED ILLUSTRATION + MAP BUILDERS (self-contained SVG)
+   ========================================================= */
+function mapSVG(active){
+  // simplified ancient near-east map; `active` = array of location keys to highlight
+  const loc = {
+    tarshish:{x:40,y:120,name:"Tarshish",sub:"(far west — Spain?)"},
+    joppa:{x:250,y:150,name:"Joppa"},
+    nazareth:{x:294,y:128,name:"Nazareth"},
+    samaria:{x:286,y:150,name:"Sychar / Samaria"},
+    jerusalem:{x:285,y:178,name:"Jerusalem"},
+    bethlehem:{x:283,y:190,name:"Bethlehem"},
+    nineveh:{x:430,y:96,name:"Nineveh"},
+  };
+  const has = k => active.includes(k);
+  let pins = "";
+  for(const k in loc){
+    const L = loc[k], on = has(k);
+    pins += `<g opacity="${on?1:.32}">
+      <circle cx="${L.x}" cy="${L.y}" r="${on?7:4.5}" fill="${on?'#7a2f3a':'#34315e'}" stroke="#fff" stroke-width="2"/>
+      <text x="${L.x+10}" y="${L.y+4}" font-size="11" font-weight="${on?700:500}" fill="#2b2420" font-family="sans-serif">${L.name}</text>
+    </g>`;
+  }
+  // optional journey arrow Jonah: joppa -> tarshish
+  let arrow = "";
+  if(has('tarshish') && has('joppa')){
+    arrow += `<path d="M248 150 Q150 100 55 118" stroke="#7a2f3a" stroke-width="2.5" stroke-dasharray="6 5" fill="none" marker-end="url(#ah)"/>
+      <text x="120" y="92" font-size="10.5" fill="#7a2f3a" font-weight="700" font-family="sans-serif">Jonah flees the wrong way →</text>`;
+  }
+  if(has('nazareth') && has('bethlehem')){
+    arrow += `<path d="M296 130 Q316 162 285 186" stroke="#2f6f6a" stroke-width="2.5" stroke-dasharray="6 5" fill="none" marker-end="url(#ah2)"/>
+      <text x="318" y="158" font-size="10" fill="#2f6f6a" font-weight="700" font-family="sans-serif">~90 mi journey</text>`;
+  }
+  return `<svg class="illus" viewBox="0 0 500 250" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#7a2f3a"/></marker><marker id="ah2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="#2f6f6a"/></marker></defs>
+    <rect width="500" height="250" fill="#cfe3ea"/>
+    <!-- land mass -->
+    <path d="M0 250 L0 90 Q90 70 150 95 Q200 60 250 70 L250 0 L500 0 L500 250 Z" fill="#e9e0c8"/>
+    <path d="M250 70 Q230 130 270 160 Q300 175 300 250 L500 250 L500 60 Q450 80 430 70 Q360 95 250 70 Z" fill="#e3d9bd"/>
+    <!-- sea label -->
+    <text x="120" y="200" font-size="12" fill="#5b8694" font-style="italic" font-family="serif">Mediterranean Sea</text>
+    <!-- river hint -->
+    <path d="M430 96 q20 40 5 90" stroke="#9fc1cf" stroke-width="3" fill="none" opacity=".7"/>
+    ${arrow}${pins}
+  </svg>`;
+}
+
+const ART = {
+  shepherd:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#dff0e0"/><rect y="150" width="500" height="70" fill="#bfe0b6"/><circle cx="420" cy="50" r="26" fill="#f4d77a"/><path d="M150 150c0-40 20-70 20-70" stroke="#7a5a3a" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M170 80c-14-6-26 6-20 18" stroke="#7a5a3a" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="150" cy="120" r="14" fill="#caa56b"/><rect x="142" y="132" width="16" height="30" rx="7" fill="#34315e"/><g fill="#fff" stroke="#ccc"><ellipse cx="250" cy="175" rx="20" ry="14"/><ellipse cx="300" cy="182" rx="20" ry="14"/><ellipse cx="345" cy="172" rx="20" ry="14"/></g><g fill="#2b2420"><circle cx="234" cy="172" r="5"/><circle cx="284" cy="179" r="5"/><circle cx="329" cy="169" r="5"/></g><path d="M70 175 Q120 150 180 172" stroke="#8bbf86" stroke-width="3" fill="none"/></svg>`,
+  well:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#f0e6cf"/><circle cx="430" cy="46" r="24" fill="#f4d77a"/><rect x="200" y="120" width="110" height="70" rx="6" fill="#b9a07a"/><path d="M196 120h118l-6-16H202z" fill="#9c8460"/><ellipse cx="255" cy="124" rx="50" ry="12" fill="#3a3550"/><ellipse cx="255" cy="121" rx="50" ry="12" fill="#5a86a0"/><rect x="248" y="60" width="6" height="64" fill="#7a5a3a"/><rect x="180" y="58" width="150" height="6" rx="3" fill="#7a5a3a"/><rect x="320" y="60" width="20" height="14" rx="3" fill="#caa56b"/><path d="M150 190q40-30 90-10" stroke="#cbb890" stroke-width="3" fill="none"/></svg>`,
+  ship:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#bcd4dd"/><path d="M0 150q125 30 250 0t250 0v70H0z" fill="#5d8aa0"/><path d="M0 165q125 26 250 0t250 0v55H0z" fill="#4a7488"/><path d="M170 160h170l-26 34H196z" fill="#7a5a3a"/><rect x="250" y="70" width="6" height="92" fill="#5b4327"/><path d="M256 78q70 10 60 70l-60 6z" fill="#f6f1e7"/><path d="M250 78q-60 10-52 70l52 6z" fill="#e7dcc4"/><circle cx="430" cy="48" r="20" fill="#f4d77a" opacity=".8"/><path d="M40 120q30-18 60 0M120 105q30-18 60 0" stroke="#fff" stroke-width="3" fill="none" opacity=".6"/></svg>`,
+  city:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#f0d9b8"/><circle cx="80" cy="55" r="30" fill="#f6c560" opacity=".7"/><rect y="150" width="500" height="70" fill="#cbб38a"/><rect y="150" width="500" height="70" fill="#cab388"/><g fill="#a9885c" stroke="#8a6b42"><rect x="120" y="90" width="60" height="80"/><rect x="200" y="70" width="50" height="100"/><rect x="270" y="100" width="70" height="70"/><rect x="360" y="80" width="46" height="90"/></g><g fill="#6f5535"><rect x="135" y="110" width="12" height="18"/><rect x="158" y="110" width="12" height="18"/><rect x="216" y="92" width="14" height="20"/><rect x="378" y="104" width="12" height="18"/></g><path d="M110 170h300" stroke="#7a5a3a" stroke-width="5"/></svg>`,
+  creation:`<svg class="illus" viewBox="0 0 500 220"><defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#1c1b3a"/><stop offset="0.55" stop-color="#4a467f"/><stop offset="1" stop-color="#f4d77a"/></linearGradient></defs><rect width="500" height="220" fill="url(#cg)"/><circle cx="388" cy="78" r="46" fill="#fff3cf" opacity="0.95"/><g stroke="#ffe9a8" stroke-width="3" opacity="0.7"><line x1="388" y1="18" x2="388" y2="2"/><line x1="436" y1="38" x2="456" y2="24"/><line x1="450" y1="88" x2="476" y2="88"/></g><path d="M0 160 q125 -20 250 0 t250 0 v60 H0Z" fill="#2a5b7a" opacity="0.85"/><path d="M0 176 q125 18 250 0 t250 0 v44 H0Z" fill="#1c3f57"/></svg>`,
+  manger:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#1f2547"/><path d="M120 28 l4 14 14 4 -14 4 -4 14 -4 -14 -14 -4 14 -4z" fill="#f4d77a"/><line x1="124" y1="58" x2="124" y2="120" stroke="#f4d77a" stroke-width="2" opacity="0.5"/><rect y="172" width="500" height="48" fill="#3a2f1c"/><path d="M212 162 l40 -22 40 22 -10 34 -60 0z" fill="#a9885c"/><ellipse cx="252" cy="150" rx="34" ry="10" fill="#caa56b"/><ellipse cx="252" cy="146" rx="30" ry="9" fill="#e7d3a1"/><circle cx="252" cy="142" r="9" fill="#ffe9c2"/></svg>`,
+  embrace:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#f0e6cf"/><circle cx="424" cy="46" r="24" fill="#f4d77a"/><rect y="162" width="500" height="58" fill="#cbb389"/><path d="M40 162 q120 -42 236 0" stroke="#b59b6f" stroke-width="6" fill="none" stroke-dasharray="2 11"/><circle cx="252" cy="108" r="14" fill="#caa56b"/><rect x="240" y="120" width="24" height="44" rx="10" fill="#7a2f3a"/><circle cx="282" cy="110" r="13" fill="#e3b58a"/><rect x="272" y="122" width="20" height="42" rx="9" fill="#34315e"/><path d="M254 118 q16 -5 26 2" stroke="#7a2f3a" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
+  dove:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#eaf2f0"/><circle cx="250" cy="108" r="72" fill="#fff" opacity="0.45"/><path d="M206 122 q30 -42 72 -20 q-10 10 -28 12 q26 6 40 -2 q-16 27 -54 22 q-24 -3 -30 -34z" fill="#fff" stroke="#ccd9d6"/><circle cx="224" cy="112" r="2.6" fill="#2b2420"/><path d="M280 100 l24 -8" stroke="#c79a3e" stroke-width="2"/><circle cx="308" cy="90" r="4" fill="#2f6f6a"/><circle cx="299" cy="98" r="3.5" fill="#2f6f6a"/></svg>`,
+};
+
+/* =========================================================
+   CONTENT  (World English Bible text; insights authored)
+   ========================================================= */
+const PASSAGES = {
+  psalm23:{
+    book:"Psalms", ref:"Psalm 23", tag:"Comfort · Trust",
+    sub:"A song of David · written ~1000 BC",
+    blurb:"The world's most loved poem about being cared for, even in the dark.",
+    artKey:"shepherd",
+    verses:[
+      {n:1, t:"Yahweh is my shepherd; I shall lack nothing.", s:"The LORD looks after me like a shepherd. I have everything I really need."},
+      {n:2, t:"He makes me lie down in green pastures. He leads me beside still waters.", s:"He gives me rest in safe, green places and calm water to drink."},
+      {n:3, t:"He restores my soul. He guides me in the paths of righteousness for his name's sake.", s:"He gives me new strength inside and shows me the right way to live."},
+      {n:4, t:"Even though I walk through the valley of the shadow of death, I will fear no evil, for you are with me. Your rod and your staff, they comfort me.", s:"Even in my darkest, scariest times I won't be afraid — because you are right here with me, protecting me."},
+      {n:5, t:"You prepare a table before me in the presence of my enemies. You anoint my head with oil. My cup runs over.", s:"You treat me like an honoured guest, even when enemies are watching. You bless me until I overflow."},
+      {n:6, t:"Surely goodness and loving kindness shall follow me all the days of my life, and I will dwell in Yahweh's house forever.", s:"Your goodness and love will chase after me my whole life, and I'll be at home with you forever."},
+    ],
+    insight:{
+      meaning:"David, who grew up as a shepherd boy before becoming king, flips the picture: now <em>he</em> is the sheep, and God is the shepherd. It's a poem about total trust — that you are personally known, fed, guided, and protected.",
+      context:"In the ancient Near East a shepherd lived <em>with</em> the flock for months, sleeping across the pen's gateway as a human door. The 'rod' was a club for fighting off wolves and lions; the 'staff' was the crook for rescuing a sheep that had slipped. 'Anointing with oil' was both a host's honour and a shepherd's medicine — oil was rubbed on a sheep's head to keep insects out of its eyes.",
+      mapActive:[], art:"shepherd",
+      mapCaption:null,
+      questions:[
+        "Where in your life right now do you most need to hear 'I am with you'?",
+        "A shepherd leads sheep to rest. What would 'green pastures' look like for you this week?",
+        "Verse 4 doesn't say <em>around</em> the valley — it says <em>through</em>. Why might that matter?"
+      ],
+      xrefs:[["John 10:11","Jesus: 'I am the good shepherd'"],["Isaiah 40:11","God carries the lambs"],["Psalm 23 → Luke 15","The lost sheep"]],
+      cite:"Imagery notes drawn from standard study-Bible commentary on ancient shepherding (e.g. IVP Bible Background Commentary). 'Yahweh' is how the WEB renders the divine name; most English Bibles print 'the LORD'."
+    }
+  },
+
+  jonah1:{
+    book:"Jonah", ref:"Jonah 1:1–6", tag:"Running from God",
+    sub:"A prophet of Israel · ~8th century BC",
+    blurb:"A prophet told to go east… who buys a ticket as far west as money can take him.",
+    artKey:"ship",
+    verses:[
+      {n:1, t:"Now Yahweh's word came to Jonah the son of Amittai, saying,", s:"God spoke to a prophet named Jonah and said:"},
+      {n:2, t:"“Arise, go to Nineveh, that great city, and preach against it, for their wickedness has come up before me.”", s:"“Get up and go to the huge city of Nineveh. Warn them, because I've seen how evil they've become.”"},
+      {n:3, t:"But Jonah rose up to flee to Tarshish from the presence of Yahweh. He went down to Joppa, and found a ship going to Tarshish; so he paid its fare, and went down into it, to go with them to Tarshish from the presence of Yahweh.", s:"But Jonah ran the opposite way. He went to the port of Joppa, paid for a ship to Tarshish (about as far away as you could sail), and tried to escape from God."},
+      {n:4, t:"But Yahweh sent out a great wind on the sea, and there was a mighty storm on the sea, so that the ship was likely to break up.", s:"So God sent a huge wind, and the storm was so violent the ship was about to break apart."},
+      {n:5, t:"Then the mariners were afraid, and every man cried to his god. They threw the cargo that was in the ship into the sea to lighten the ship. But Jonah had gone down into the innermost parts of the ship, and he was laying down, and was fast asleep.", s:"The terrified sailors each prayed to their own god and threw cargo overboard to stay afloat. Meanwhile Jonah was down below, fast asleep."},
+      {n:6, t:"So the shipmaster came to him, and said to him, “What do you mean, sleeper? Arise, call on your God! Maybe your God will notice us, so that we won't perish.”", s:"The captain found him and said, “How can you sleep? Get up and pray to your God! Maybe he'll save us.”"},
+    ],
+    insight:{
+      meaning:"God asks Jonah to warn Israel's most feared <em>enemy</em>. Jonah doesn't argue — he runs, because deep down he's afraid God might actually forgive them. It's a story about the scandal of mercy reaching people we'd rather see punished.",
+      context:"Nineveh was the capital of <strong>Assyria</strong>, a brutal empire that terrorised Israel — asking Jonah to preach there was like asking him to walk into the enemy's throne room. Notice the geography: Nineveh is <strong>east</strong>, but Jonah sails to <strong>Tarshish</strong> (likely Spain) — the far <em>west</em> edge of the known world. He literally goes as far in the wrong direction as possible. The text repeats 'went down… down… down' — Joppa, the ship, sleep — a slow fall away from God.",
+      mapActive:["joppa","tarshish","nineveh"], art:null,
+      mapCaption:"Jonah was sent EAST to Nineveh — he sailed WEST toward Tarshish instead.",
+      questions:[
+        "Is there a 'Nineveh' — a person or group — you'd rather God didn't forgive?",
+        "Jonah ran from a clear call. What does it look like when we 'go to sleep' to avoid something we know we should do?",
+        "Even the pagan captain prays. Why might God use outsiders to wake up His own people?"
+      ],
+      xrefs:[["Jonah 4:2","Why Jonah really ran"],["Matthew 12:40","Jesus & 'three days'"],["Luke 15:11","The father runs to the prodigal"]],
+      cite:"Historical/geographic notes reflect mainstream Old Testament scholarship on Assyria and ancient trade routes (Tarshish commonly identified with the western Mediterranean). Interpretation of Jonah's motive draws on the book's own ending (Jonah 4)."
+    }
+  },
+
+  john4:{
+    book:"John", ref:"John 4:5–15", tag:"An unlikely conversation",
+    sub:"Jesus in Samaria · ~AD 27",
+    blurb:"Jesus breaks three social rules at once just to talk with one outsider woman.",
+    artKey:"well",
+    verses:[
+      {n:5, t:"So he came to a city of Samaria, called Sychar, near the parcel of ground that Jacob gave to his son, Joseph.", s:"Jesus arrived at a Samaritan town called Sychar, near land the patriarch Jacob had given his son Joseph long ago."},
+      {n:6, t:"Jacob's well was there. Jesus therefore, being tired from his journey, sat down by the well. It was about the sixth hour.", s:"Jacob's well was there. Tired from walking, Jesus sat down beside it. It was about noon — the hottest part of the day."},
+      {n:7, t:"A woman of Samaria came to draw water. Jesus said to her, “Give me a drink.”", s:"A Samaritan woman came to get water. Jesus said to her, “Would you give me a drink?”"},
+      {n:8, t:"For his disciples had gone away into the city to buy food.", s:"(His followers had gone into town to buy food.)"},
+      {n:9, t:"The Samaritan woman therefore said to him, “How is it that you, being a Jew, ask for a drink from me, a Samaritan woman?” (For Jews have no dealings with Samaritans.)", s:"She was stunned: “You're a Jew — why are you even speaking to me, a Samaritan woman?” (Jews and Samaritans avoided each other.)"},
+      {n:10, t:"Jesus answered her, “If you knew the gift of God, and who it is who says to you, ‘Give me a drink,’ you would have asked him, and he would have given you living water.”", s:"Jesus replied, “If you knew God's gift, and who is asking you, you'd have asked <em>me</em> — and I'd give you living water.”"},
+      {n:11, t:"The woman said to him, “Sir, you have nothing to draw with, and the well is deep. So where do you get that living water?”", s:"“Sir,” she said, “you have no bucket and this well is deep. Where would you get this living water?”"},
+      {n:12, t:"“Are you greater than our father, Jacob, who gave us the well, and drank of it himself, as did his children, and his livestock?”", s:"“Are you greater than our ancestor Jacob, who gave us this well and drank from it himself?”"},
+      {n:13, t:"Jesus answered her, “Everyone who drinks of this water will thirst again,”", s:"Jesus answered, “Anyone who drinks this water will get thirsty again.”"},
+      {n:14, t:"“but whoever drinks of the water that I will give him will never thirst again; but the water that I will give him will become in him a well of water springing up to eternal life.”", s:"“But whoever drinks the water I give will never be thirsty again. It becomes a spring inside them, bubbling up to eternal life.”"},
+      {n:15, t:"The woman said to him, “Sir, give me this water, so that I don't get thirsty, neither come all the way here to draw.”", s:"“Sir,” she said, “give me this water, so I'll never be thirsty or have to keep coming here!”"},
+    ],
+    insight:{
+      meaning:"Jesus crosses three barriers no respectable teacher would: He speaks to a <strong>Samaritan</strong> (an ethnic rival), a <strong>woman</strong> (alone, in public), with a broken reputation — and offers her 'living water,' a life that doesn't run dry. The outsider gets the longest one-on-one conversation in John's Gospel.",
+      context:"Jews and Samaritans had hated each other for centuries over <em>where</em> to worship God. Most women drew water in the cool morning, together; this woman comes alone at <strong>noon</strong> — a quiet hint she was avoiding the crowd. 'Living water' literally meant fresh, flowing stream water (better than still well water) — Jesus uses the everyday meaning to point to something deeper. They're standing at <strong>Jacob's well</strong>, a place sacred to both peoples, which makes Jesus' claim to be 'greater than Jacob' land with a jolt.",
+      mapActive:["samaria","jerusalem"], art:"well",
+      mapCaption:"Sychar in Samaria — the region Jewish travellers usually went around, not through.",
+      questions:[
+        "Jesus starts by asking <em>her</em> for help. How does needing someone open a door that lecturing them never could?",
+        "Who are the 'Samaritans' in your world — the people you quietly avoid?",
+        "She came for water and left having met God. What ordinary errand might God meet you in this week?"
+      ],
+      xrefs:[["John 7:38","'Rivers of living water'"],["Jeremiah 2:13","God, the spring of living water"],["Luke 10:33","The Good Samaritan"]],
+      cite:"Background on Jewish–Samaritan relations, the noon detail, and 'living water' follows standard Gospel commentary (e.g. Keener, IVP Background Commentary). Reading her motive for coming at noon is a common but interpretive inference, not stated in the text."
+    }
+  },
+
+  genesis1:{
+    book:"Genesis", ref:"Genesis 1:1–5", tag:"In the beginning",
+    sub:"The opening of the Bible", artKey:"creation",
+    blurb:"How everything began — light spoken into the dark.",
+    verses:[
+      {n:1, t:"In the beginning, God created the heavens and the earth.", s:"At the very start, God made everything — the sky, the earth, all of it."},
+      {n:2, t:"The earth was formless and empty. Darkness was on the surface of the deep and God's Spirit was hovering over the surface of the waters.", s:"The earth had no shape and nothing on it. It was dark, and God's Spirit moved over the deep waters."},
+      {n:3, t:"God said, “Let there be light,” and there was light.", s:"God simply said, “Let there be light” — and light appeared."},
+      {n:4, t:"God saw the light, and saw that it was good. God divided the light from the darkness.", s:"God saw that the light was good, and separated the light from the dark."},
+      {n:5, t:"God called the light “day”, and the darkness he called “night”. There was evening and there was morning, the first day.", s:"He named the light “day” and the dark “night.” Evening came, then morning — the first day."},
+    ],
+    insight:{
+      meaning:"The Bible opens not with an argument but a declaration: one God, by his word alone, brings order and life out of darkness and chaos — and calls it <em>good</em>. Creation is intended, not accidental.",
+      context:"Israel's neighbours told creation stories where the world was formed from the corpses of warring gods, or by accident. Genesis is strikingly different: <strong>no struggle, no rival gods</strong> — God simply speaks. The Hebrew for 'formless and empty' (<em>tohu wabohu</em>) pictures an unshaped, unfilled wasteland that God then shapes (days 1–3) and fills (days 4–6). 'God's Spirit hovering' uses a word like a bird brooding over its nest — care, not chaos.",
+      mapActive:[], art:"creation", mapCaption:null,
+      questions:[
+        "God's first recorded act is to bring light into darkness. Where do you most need light right now?",
+        "Everything God makes, he calls 'good.' How does that change how you see the world — and yourself?",
+        "Creation comes through God simply <em>speaking</em>. What might that say about the power of his word?"
+      ],
+      xrefs:[["John 1:1–3","'In the beginning was the Word'"],["Psalm 33:6","'By the word of Yahweh…'"],["2 Cor 4:6","Light out of darkness, again"]],
+      cite:"Comparisons with ancient Near Eastern creation accounts (e.g. Enuma Elish) and the sense of <em>tohu wabohu</em> and the 'hovering/brooding' image reflect mainstream Old Testament scholarship. 'Yahweh' is the WEB's rendering of the divine name."
+    }
+  },
+
+  luke2:{
+    book:"Luke", ref:"Luke 2:1–7", tag:"The first Christmas",
+    sub:"The birth of Jesus · ~5 BC", artKey:"manger",
+    blurb:"God enters the world in a feeding trough, in a forgotten town.",
+    verses:[
+      {n:1, t:"Now in those days, a decree went out from Caesar Augustus that all the world should be enrolled.", s:"Around that time, the Roman emperor Augustus ordered a census — everyone had to be counted."},
+      {n:2, t:"This was the first enrollment made when Quirinius was governor of Syria.", s:"(This was the first such census, when Quirinius governed Syria.)"},
+      {n:3, t:"All went to enroll themselves, everyone to his own city.", s:"So everyone travelled to their family's home town to register."},
+      {n:4, t:"Joseph also went up from Galilee, out of the city of Nazareth, into Judea, to the city of David, which is called Bethlehem, because he was of the house and family of David,", s:"Joseph left Nazareth in Galilee and went to Bethlehem in Judea — King David's town — because he was from David's family."},
+      {n:5, t:"to enroll himself with Mary, who was pledged to be married to him as wife, being pregnant.", s:"He went to register with Mary, his pledged wife, who was pregnant."},
+      {n:6, t:"While they were there, the day had come for her to give birth.", s:"While they were there, the time came for her baby to be born."},
+      {n:7, t:"She gave birth to her firstborn son. She wrapped him in bands of cloth and laid him in a feeding trough, because there was no room for them in the inn.", s:"She gave birth to her first son, wrapped him snugly in cloth, and laid him in an animal's feeding trough — because there was no room for them to stay."},
+    ],
+    insight:{
+      meaning:"The King of all things arrives not in a palace but in a stable, in a small town, to an ordinary couple, under the thumb of an empire. God's greatness shows up in humility — and exactly where prophecy said it would.",
+      context:"A Roman <strong>census</strong> for taxation forces Joseph to his ancestral town. <strong>Bethlehem</strong> was David's birthplace and the place Micah (700 years earlier) named for the Messiah's birth. The 'inn' is likely a <em>kataluma</em> — a guest room — so the family ends up where the animals are kept, and Jesus is laid in a <strong>manger</strong> (a feeding trough). The whole scene is deliberately humble: the Saviour of the world, homeless on his first night.",
+      mapActive:["nazareth","bethlehem","jerusalem"], art:"manger",
+      mapCaption:"Nazareth to Bethlehem — about 90 miles, on foot or donkey, while heavily pregnant.",
+      questions:[
+        "God chose a feeding trough, not a throne. Where do you look for God — and might he be somewhere humbler?",
+        "Mary and Joseph were ordinary people caught up in something huge. How does God use ordinary lives?",
+        "Prophets pointed to Bethlehem 700 years before. What does that fulfilment stir in you?"
+      ],
+      xrefs:[["Micah 5:2","Bethlehem foretold"],["Isaiah 9:6","'For to us a child is born'"],["John 1:14","'The Word became flesh'"]],
+      cite:"The <em>kataluma</em> ('guest room' rather than 'inn'), the manger, and the census background follow standard Gospel commentary; the exact year of the census and Quirinius's governorship are debated among historians."
+    }
+  },
+
+  luke15:{
+    book:"Luke", ref:"Luke 15:11–24", tag:"The father who runs",
+    sub:"A parable of Jesus", artKey:"embrace",
+    blurb:"A son throws his life away — and a father runs to welcome him home.",
+    verses:[
+      {n:11, t:"He said, “A certain man had two sons.", s:"Jesus said: “A man had two sons."},
+      {n:12, t:"The younger of them said to his father, ‘Father, give me my share of your property.’ He divided his livelihood between them.", s:"The younger son said, ‘Father, give me my share of the inheritance now.’ So the father divided his property between them."},
+      {n:13, t:"Not many days after, the younger son gathered all of this together and traveled into a far country. There he wasted his property with riotous living.", s:"Soon after, the younger son took everything, left for a distant country, and blew it all on wild living."},
+      {n:14, t:"When he had spent all of it, there arose a severe famine in that country, and he began to be in need.", s:"Once his money was gone, a bad famine hit, and he had nothing."},
+      {n:15, t:"He went and joined himself to one of the citizens of that country, and he sent him into his fields to feed pigs.", s:"Desperate, he hired himself out to a local man who sent him to feed pigs."},
+      {n:16, t:"He wanted to fill his belly with the pods that the pigs ate, but no one gave him any.", s:"He was so hungry he envied the pigs' food — and no one helped him."},
+      {n:17, t:"But when he came to himself he said, ‘How many hired servants of my father’s have bread enough to spare, and I’m dying with hunger!", s:"Then he came to his senses: ‘My father's hired workers have food to spare, and here I am starving!"},
+      {n:18, t:"I will get up and go to my father, and will tell him, “Father, I have sinned against heaven and in your sight.", s:"I'll go back to my father and say, “Father, I've sinned against heaven and against you."},
+      {n:19, t:"I am no more worthy to be called your son. Make me as one of your hired servants.”’", s:"I don't deserve to be called your son — just hire me as a worker.”’"},
+      {n:20, t:"He arose and came to his father. But while he was still far off, his father saw him and was moved with compassion, and ran, fell on his neck, and kissed him.", s:"So he went home. While he was still far away, his father saw him, was filled with love, ran to him, threw his arms around him, and kissed him."},
+      {n:21, t:"The son said to him, ‘Father, I have sinned against heaven and in your sight. I am no longer worthy to be called your son.’", s:"The son began, ‘Father, I've sinned against heaven and you; I'm not worthy to be called your son.’"},
+      {n:22, t:"But the father said to his servants, ‘Bring out the best robe and put it on him. Put a ring on his hand and sandals on his feet.", s:"But the father told his servants, ‘Quick — bring the best robe, a ring for his hand, sandals for his feet."},
+      {n:23, t:"Bring the fattened calf, kill it, and let’s eat and celebrate;", s:"Prepare the best calf for a feast — let's celebrate!"},
+      {n:24, t:"for this, my son, was dead and is alive again. He was lost and is found.’ They began to celebrate.", s:"My son was as good as dead, and he's alive again; he was lost, and now he's found!’ And the party began."},
+    ],
+    insight:{
+      meaning:"Jesus paints God as a father who has every right to be furious — and instead picks up his robes and <em>runs</em> to a returning child, restoring him fully before he can even finish his apology. It's the clearest picture of grace in the Bible.",
+      context:"Asking for inheritance early was effectively saying <strong>'I wish you were dead.'</strong> The son ends up feeding <strong>pigs</strong> — unclean animals — the lowest possible job for a Jew. When the father <strong>runs</strong>, that mattered: a dignified Middle-Eastern man did not hike up his robes and sprint, especially toward a son who had disgraced the family. The robe, ring, and sandals each signal full <strong>restoration to sonship</strong>, not a probation. Jesus told this to religious people who grumbled that he welcomed sinners (15:1–2).",
+      mapActive:[], art:"embrace", mapCaption:null,
+      questions:[
+        "Which son do you relate to more right now — the one who ran off, or the dutiful one watching from the field?",
+        "The father runs <em>before</em> the apology is finished. How does that compare to the God you imagine?",
+        "What would it mean for you to 'come to yourself' and head home this week?"
+      ],
+      xrefs:[["Luke 15:1–2","Who Jesus told this to"],["Luke 15:25–32","The older brother's turn"],["2 Cor 5:19","God reconciling us"]],
+      cite:"The cultural weight of the early inheritance request, pig-feeding, and the father's undignified run are widely noted in Middle-Eastern readings of the parable (e.g. Kenneth Bailey). The interpretation is well-established but is, by nature, a parable's application."
+    }
+  },
+
+  philippians4:{
+    book:"Philippians", ref:"Philippians 4:4–7", tag:"Peace over anxiety",
+    sub:"Paul, writing from prison · ~AD 61", artKey:"dove",
+    blurb:"How to trade worry for a peace that doesn't quite make sense.",
+    verses:[
+      {n:4, t:"Rejoice in the Lord always! Again I will say, “Rejoice!”", s:"Be glad in the Lord, always — I'll say it again: be glad!"},
+      {n:5, t:"Let your gentleness be known to all men. The Lord is at hand.", s:"Let everyone see how gentle you are. The Lord is near."},
+      {n:6, t:"In nothing be anxious, but in everything, by prayer and petition with thanksgiving, let your requests be made known to God.", s:"Don't be anxious about anything. Instead, in everything, pray — ask God, thank him — and tell him what you need."},
+      {n:7, t:"And the peace of God, which surpasses all understanding, will guard your hearts and your minds in Christ Jesus.", s:"Then God's peace, deeper than we can understand, will stand guard over your heart and mind in Christ Jesus."},
+    ],
+    insight:{
+      meaning:"Paul gives an almost step-by-step way to handle anxiety: don't pretend it away — bring every worry to God, specifically and thankfully — and a peace beyond explanation will stand guard over you. Remarkably, he writes this from a prison cell.",
+      context:"Philippians is often called the <strong>'letter of joy,'</strong> yet Paul wrote it <strong>chained in a Roman prison</strong>, facing possible execution. 'The Lord is at hand' means God is <em>near</em>. The word for 'guard' (<em>phroureō</em>) is a <strong>military term</strong> — a garrison of soldiers posted around a city. Paul pictures God's peace as a guard stationed around your heart and mind. Notice the antidote to anxiety isn't 'try harder' — it's prayer plus thanksgiving.",
+      mapActive:[], art:"dove", mapCaption:null,
+      questions:[
+        "What specific worry could you actually name to God today — out loud or written down?",
+        "Paul pairs every request with <em>thanksgiving</em>. What can you thank God for even in the middle of this?",
+        "He wrote 'rejoice' from a prison cell. What does that tell you about where real peace comes from?"
+      ],
+      xrefs:[["Matthew 6:25–34","'Do not be anxious'"],["1 Peter 5:7","'Cast all your anxiety on him'"],["Isaiah 26:3","Perfect peace, a steady mind"]],
+      cite:"Paul's imprisonment as the setting, the 'letter of joy' tradition, and the military sense of <em>phroureō</em> ('guard') are standard in New Testament commentary."
+    }
+  },
+};
+
+/* =========================================================
+   COMMUNITY SEED DATA
+   ========================================================= */
+const SEED_COMMUNITY = [
+  {ref:"Psalm 23:4", vtext:"“…I will fear no evil, for you are with me.”", body:"Lost my dad in March. This is the only verse that's held me. 'Through' the valley — not stuck in it. Holding onto that today. 🙏", who:"Maria T.", color:"#7a2f3a", likes:42, amen:18},
+  {ref:"Jonah 1:3", vtext:"“But Jonah rose up to flee to Tarshish…”", body:"Never noticed before that Nineveh is east and he sails west. I do this constantly — the second I sense God nudging me somewhere hard, I find a 'ship to Tarshish.' Convicting.", who:"Daniel K.", color:"#2f6f6a", likes:67, amen:31},
+  {ref:"John 4:7", vtext:"“Jesus said to her, ‘Give me a drink.’”", body:"It hit me that Jesus opens by asking HER for help. He didn't approach as the fixer. Trying this with my teenager instead of lecturing.", who:"Priya S.", color:"#4a467f", likes:55, amen:24},
+];
+
+/* =========================================================
+   STATE + STORAGE
+   ========================================================= */
+const LS = {
+  get notes(){ return JSON.parse(localStorage.getItem('ill_notes')||'[]'); },
+  set notes(v){ localStorage.setItem('ill_notes', JSON.stringify(v)); },
+  get hls(){ return JSON.parse(localStorage.getItem('ill_hls')||'{}'); },
+  set hls(v){ localStorage.setItem('ill_hls', JSON.stringify(v)); },
+  get comm(){ return JSON.parse(localStorage.getItem('ill_comm')||'[]'); },
+  set comm(v){ localStorage.setItem('ill_comm', JSON.stringify(v)); },
+};
+let state = { passage:'psalm23', level:'scripture', hlColor:'hl-yellow', activeVerse:null };
+
+/* =========================================================
+   SHARED SYNC  (Supabase — private to you two)
+   ========================================================= */
+const SB_URL = 'https://hcqrkctlopstntkmizio.supabase.co';
+const SB_KEY = 'sb_publishable_MnYaoko7ZLzPiBnxYXL81Q_ThcvDvMn';
+const getAuthor = ()=> localStorage.getItem('ill_author')||'';
+const setAuthor = v => localStorage.setItem('ill_author', v);
+function colorFor(name){ const cs=['#7a2f3a','#2f6f6a','#4a467f','#c79a3e','#34315e','#8a5a2b']; let s=0; for(const c of (name||'x')) s+=c.charCodeAt(0); return cs[s%cs.length]; }
+function viewActive(id){ const v=document.getElementById(id); return v&&v.classList.contains('active'); }
+function setSync(on){ const d=document.getElementById('syncDot'); if(d) d.classList.toggle('on', !!on); }
+
+let sb = null;
+const cloud = {
+  ready:false,
+  init(){
+    if(!window.supabase || !getAuthor()) return;
+    try{ sb = window.supabase.createClient(SB_URL, SB_KEY); }catch(e){ return; }
+    this.ready = true; setSync(true);
+    this.pullAll();
+    try{
+      sb.channel('illumine')
+        .on('postgres_changes',{event:'*',schema:'public',table:'illumine_insights'},()=>this.pullInsights())
+        .on('postgres_changes',{event:'*',schema:'public',table:'illumine_notes'},p=>{ const a=((p.new||p.old)||{}).author; if(a===getAuthor()) this.pullNotes(); })
+        .on('postgres_changes',{event:'*',schema:'public',table:'illumine_highlights'},p=>{ const a=((p.new||p.old)||{}).author; if(a===getAuthor()) this.pullHighlights(); })
+        .subscribe();
+    }catch(e){}
+  },
+  async pullAll(){ try{ await Promise.all([this.pullNotes(),this.pullHighlights(),this.pullInsights()]); }catch(e){} },
+  async pullNotes(){
+    if(!sb) return;
+    const {data,error}=await sb.from('illumine_notes').select('*').eq('author',getAuthor()).order('updated_at',{ascending:false});
+    if(error||!data) return;
+    LS.notes = data.map(r=>({passage:r.passage,verse:r.verse,ref:r.ref,vtext:r.vtext,text:r.body,ts:new Date(r.updated_at).getTime()}));
+    if(viewActive('notes')) renderNotes();
+    if(viewActive('reader')) renderScripture();
+  },
+  async pullHighlights(){
+    if(!sb) return;
+    const {data,error}=await sb.from('illumine_highlights').select('*').eq('author',getAuthor());
+    if(error||!data) return;
+    const h={}; data.forEach(r=>{ if(r.color){ (h[r.passage]=h[r.passage]||{})[r.verse]=r.color; }});
+    LS.hls=h;
+    if(viewActive('reader')) renderScripture();
+  },
+  async pullInsights(){
+    if(!sb) return;
+    const {data,error}=await sb.from('illumine_insights').select('*').order('created_at',{ascending:false});
+    if(error||!data) return;
+    const me=getAuthor();
+    LS.comm = data.map(r=>({id:r.id,ref:r.ref,vtext:r.vtext,body:r.body,who:r.author,likes:r.likes,amen:r.amen,mine:r.author===me,color:colorFor(r.author),ts:new Date(r.created_at).getTime()}));
+    if(viewActive('community')) renderCommunity();
+  },
+  async pushNote(row){ if(!sb) return; try{ await sb.from('illumine_notes').upsert(row,{onConflict:'author,passage,verse'}); }catch(e){} },
+  async delNote(passage,verse){ if(!sb) return; try{ await sb.from('illumine_notes').delete().match({author:getAuthor(),passage,verse}); }catch(e){} },
+  async pushHighlight(row){ if(!sb) return; try{ await sb.from('illumine_highlights').upsert(row,{onConflict:'author,passage,verse'}); }catch(e){} },
+  async pushInsight(row){ if(!sb) return; try{ await sb.from('illumine_insights').insert(row); this.pullInsights(); }catch(e){} },
+  async react(id,field,val){ if(!sb||!id) return; try{ await sb.from('illumine_insights').update({[field]:val}).eq('id',id); }catch(e){} },
+};
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+function go(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id===view));
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('active', b.dataset.go===view));
+  if(view==='notes') renderNotes();
+  if(view==='community') renderCommunity();
+  if(view==='create') renderCreate();
+  if(view!=='reader') stopRead();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+/* =========================================================
+   LIBRARY
+   ========================================================= */
+function renderLibrary(){
+  const g = document.getElementById('libGrid'); g.innerHTML='';
+  for(const key in PASSAGES){
+    const p = PASSAGES[key];
+    const el = document.createElement('div');
+    el.className='pcard';
+    el.innerHTML = `<div class="art">${ART[p.artKey]||''}</div>
+      <div class="meta"><div class="tag">${p.tag}</div><h3>${p.ref}</h3><p>${p.blurb}</p></div>`;
+    el.addEventListener('click',()=>openReader(key));
+    g.appendChild(el);
+  }
+}
+
+/* =========================================================
+   READER
+   ========================================================= */
+function openReader(key){
+  state.passage = key; state.activeVerse=null;
+  const p = PASSAGES[key];
+  document.getElementById('rTitle').textContent = p.ref;
+  document.getElementById('rSub').textContent = p.sub + ' · ' + p.book;
+  renderScripture();
+  resetPanel();
+  go('reader');
+}
+function renderScripture(){
+  const p = PASSAGES[state.passage];
+  const wrap = document.getElementById('scripture');
+  wrap.className = 'scripture' + (state.level==='simple'?' simple':'');
+  const hls = LS.hls[state.passage]||{};
+  const notes = LS.notes.filter(n=>n.passage===state.passage).map(n=>n.verse);
+  wrap.innerHTML='';
+  p.verses.forEach(v=>{
+    const span = document.createElement('span');
+    span.className='v' + (hls[v.n]?(' '+hls[v.n]):'') + (state.activeVerse===v.n?' active':'');
+    if(notes.includes(v.n)) span.setAttribute('data-note','1');
+    span.innerHTML = `<span class="vn">${v.n}</span>${state.level==='simple'?v.s:v.t} `;
+    span.addEventListener('click',(e)=>onVerseClick(v.n, e));
+    wrap.appendChild(span);
+  });
+}
+function onVerseClick(n, e){
+  // if a highlighter (non-erase) was just used via swatch? We use simple model:
+  // plain click = open insight + apply current highlight toggle is separate.
+  state.activeVerse = n;
+  renderScripture();
+  showInsight(n);
+}
+
+/* swatches: clicking a swatch sets color; next verse click applies it AND opens panel.
+   To keep it intuitive: selecting a swatch immediately applies to the active verse. */
+document.querySelectorAll('.sw').forEach(s=>{
+  s.addEventListener('click',()=>{
+    const c = s.dataset.hl;
+    state.hlColor = c;
+    if(state.activeVerse!=null){
+      const hls = LS.hls; hls[state.passage]=hls[state.passage]||{};
+      if(c) hls[state.passage][state.activeVerse]=c; else delete hls[state.passage][state.activeVerse];
+      LS.hls = hls; renderScripture();
+      cloud.pushHighlight({author:getAuthor(),passage:state.passage,verse:state.activeVerse,color:c||null,updated_at:new Date().toISOString()});
+      toast(c?'Highlighted ✨':'Highlight cleared');
+    } else {
+      toast('Tap a verse first, then pick a colour');
+    }
+  });
+});
+
+document.getElementById('levelSeg').addEventListener('click',e=>{
+  if(e.target.dataset.level){
+    state.level = e.target.dataset.level;
+    document.querySelectorAll('#levelSeg button').forEach(b=>b.classList.toggle('active', b===e.target));
+    renderScripture();
+  }
+});
+
+function resetPanel(){
+  const panel = document.getElementById('panel');
+  panel.classList.add('empty');
+  document.getElementById('panelBody').innerHTML =
+    `<p style="font-size:40px;margin:0">✨</p><p>Tap a verse to reveal its meaning, history, a map of the place, and questions to reflect on.</p>`;
+}
+
+function showInsight(n){
+  const p = PASSAGES[state.passage];
+  const I = p.insight;
+  const v = p.verses.find(x=>x.n===n);
+  const panel = document.getElementById('panel');
+  panel.classList.remove('empty');
+
+  // map or art
+  let visual = '';
+  if(I.mapActive && I.mapActive.length){
+    visual = `<div class="sec"><div class="lbl">${icon('map')} Where it happened</div>${mapSVG(I.mapActive)}${I.mapCaption?`<div class="mapcaption">${I.mapCaption}</div>`:''}</div>`;
+  } else if(I.art){
+    visual = `<div class="sec"><div class="lbl">${icon('pic')} Picture it</div>${ART[I.art]||''}</div>`;
+  }
+  // if both map and art exist, show art too
+  let artExtra='';
+  if(I.mapActive && I.mapActive.length && I.art){
+    artExtra = `<div class="sec"><div class="lbl">${icon('pic')} Picture it</div>${ART[I.art]||''}</div>`;
+  }
+
+  const xrefs = I.xrefs.map(x=>`<span class="xref" title="${x[1]}">${x[0]}</span>`).join('');
+  const qs = I.questions.map(q=>`<li>${q}</li>`).join('');
+
+  document.getElementById('panelBody').innerHTML = `
+    <div class="sec">
+      <div class="lbl">${icon('book')} ${p.ref.split(':')[0]}:${n} — in plain words</div>
+      <p style="font-family:var(--serif);font-style:italic;color:var(--muted)">“${v.t}”</p>
+      <p>${v.s}</p>
+    </div>
+    <div class="sec"><div class="lbl">${icon('spark')} What it means</div><p>${I.meaning}</p></div>
+    <div class="sec"><div class="lbl">${icon('scroll')} History &amp; culture</div><p>${I.context}</p></div>
+    ${visual}${artExtra}
+    <div class="sec"><div class="lbl">${icon('q')} Questions to sit with</div><ul class="qs">${qs}</ul></div>
+    <div class="sec"><div class="lbl">${icon('link')} Connected verses</div>${xrefs}</div>
+
+    <div class="ai">
+      <div class="aihead">${icon('ai')} Ask the study companion</div>
+      <div id="aiBox"></div>
+    </div>
+
+    <div class="sec">
+      <div class="lbl">${icon('pen')} Your note</div>
+      <div class="notebox">
+        <textarea id="noteInput" placeholder="What stands out to you about verse ${n}? Write a thought, a prayer, a question…">${getNoteText(n)}</textarea>
+        <div class="row">
+          <button class="btn primary" id="saveNote">Save to my notes</button>
+          <button class="btn gold" id="shareNote">Share with community</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="cite">${icon('shield')}<span><strong>Why you can trust this:</strong> ${I.cite}</span></div>
+    </div>
+  `;
+
+  // panel scroll to top
+  document.getElementById('panelBody').scrollTop = 0;
+
+  // wire AI companion (live Claude)
+  renderAICompanion(n);
+  // wire note buttons
+  document.getElementById('saveNote').addEventListener('click',()=>saveNote(n));
+  document.getElementById('shareNote').addEventListener('click',()=>shareNote(n));
+}
+
+/* =========================================================
+   LIVE CLAUDE COMPANION  (browser → Anthropic API, user's key)
+   ========================================================= */
+const getKey   = ()=> localStorage.getItem('ill_apikey')||'';
+const setKey   = v => v ? localStorage.setItem('ill_apikey',v) : localStorage.removeItem('ill_apikey');
+const getModel = ()=> localStorage.getItem('ill_model')||'claude-opus-4-8';
+const setModel = v => localStorage.setItem('ill_model',v);
+
+async function callClaude({system, user, max_tokens=1024, model}){
+  const key = getKey();
+  if(!key) throw new Error('No API key connected.');
+  const res = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key':key,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({ model: model||getModel(), max_tokens, system, messages:[{role:'user', content:user}] })
+  });
+  if(!res.ok){
+    let msg = 'Error '+res.status;
+    try{ const j = await res.json(); if(j.error&&j.error.message) msg = j.error.message; }catch(e){}
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+}
+
+function companionSystem(passKey){
+  const p = PASSAGES[passKey];
+  const ch = p.ref.match(/\d+/)[0];
+  const verses = p.verses.map(v=>`${ch}:${v.n} ${v.t}`).join('\n');
+  return `You are Illumine's Bible study companion, helping a reader understand Scripture.
+Passage currently in view: ${p.book} ${p.ref} (World English Bible).
+Verses:
+${verses}
+
+How to answer:
+- Warm, plain language a brand-new or less-confident reader can follow. Define any churchy or technical terms.
+- Ground every claim in the text itself or in well-established history/scholarship. When something is interpretation or a scholarly guess, say so plainly ("Many scholars think…", "One way to read this…"). NEVER invent quotes, verses, dates, or facts.
+- You are a study aid — never a replacement for Scripture, prayer, the Holy Spirit, a pastor, or a church. Where helpful, gently point the reader back to the text and to wise teachers.
+- Respect sincere Christian faith and the range of Christian traditions; where faithful Christians differ, note it rather than taking sides.
+- Be concise: at most 2–4 short paragraphs. Give your final answer directly, without narrating your reasoning.`;
+}
+
+function renderAICompanion(n){
+  const box = document.getElementById('aiBox');
+  if(!box) return;
+  if(!getKey()){
+    box.innerHTML = `<div class="connect">
+      <p style="margin:0 0 8px;font-size:14px;line-height:1.5">Connect Claude to ask <strong>any</strong> question about this passage and get a plain-English, source-grounded answer.</p>
+      <input id="keyInput" type="password" placeholder="Paste your Anthropic API key (sk-ant-…)" style="width:100%"/>
+      <div class="row" style="margin-top:8px;align-items:center;flex-wrap:nowrap">
+        <select id="modelSel" style="flex:1;min-width:0">
+          <option value="claude-opus-4-8">Opus 4.8 — smartest</option>
+          <option value="claude-sonnet-4-6">Sonnet 4.6 — balanced</option>
+          <option value="claude-haiku-4-5">Haiku 4.5 — fastest</option>
+        </select>
+        <button class="btn primary" id="keySave">Connect</button>
+      </div>
+      <div class="disc">Your key is stored only in this browser and sent directly to Anthropic — never to us. Get one at <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a>. A real public app would keep the key on a server, not in the browser.</div>
+    </div>`;
+    document.getElementById('keySave').addEventListener('click',()=>{
+      const k = document.getElementById('keyInput').value.trim();
+      if(!k){ toast('Paste your API key first'); return; }
+      setKey(k); setModel(document.getElementById('modelSel').value);
+      toast('Claude connected ✨'); renderAICompanion(n);
+    });
+    return;
+  }
+  const ch = PASSAGES[state.passage].ref.match(/\d+/)[0];
+  const ref = `${PASSAGES[state.passage].book} ${ch}:${n}`;
+  box.innerHTML = `
+    <div class="chips" id="aiChips"></div>
+    <div class="airow">
+      <input id="aiInput" placeholder="Ask anything about ${ref}…"/>
+      <button class="btn primary" id="aiSend">Ask</button>
+    </div>
+    <div class="answer" id="aiAnswer"></div>
+    <div class="disc">Live answers from Claude, grounded in this passage — a study aid, so always weigh them against Scripture and trusted teachers. <a href="#" id="aiForget">Disconnect</a></div>`;
+  const starters = [`Explain ${ref} in simple words`, `What's the historical background here?`, `How can I apply this to my life?`, `Who are the people involved?`];
+  const chips = document.getElementById('aiChips');
+  starters.forEach(q=>{
+    const c=document.createElement('button'); c.className='chip'; c.textContent=q;
+    c.addEventListener('click',()=>{ document.getElementById('aiInput').value=q; askCompanion(n,q); });
+    chips.appendChild(c);
+  });
+  const send=()=>{ const q=document.getElementById('aiInput').value.trim(); if(q) askCompanion(n,q); };
+  document.getElementById('aiSend').addEventListener('click',send);
+  document.getElementById('aiInput').addEventListener('keydown',e=>{ if(e.key==='Enter') send(); });
+  document.getElementById('aiForget').addEventListener('click',e=>{ e.preventDefault(); setKey(''); toast('Disconnected'); renderAICompanion(n); });
+}
+
+async function askCompanion(n, question){
+  const ans = document.getElementById('aiAnswer');
+  ans.classList.add('show');
+  ans.innerHTML = `<span class="spin"></span> Thinking…`;
+  try{
+    const text = await callClaude({ system: companionSystem(state.passage), user: question });
+    ans.innerHTML = mdLite(text);
+  }catch(e){
+    ans.innerHTML = `<span style="color:var(--burgundy)"><strong>Couldn't reach Claude.</strong> ${escapeHTML(String(e.message||e)).slice(0,240)}</span>`;
+  }
+}
+
+function mdLite(s){
+  let h = escapeHTML(s);
+  h = h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/(^|[^*])\*([^*\n]+?)\*/g,'$1<em>$2</em>');
+  return h.split(/\n\n+/).map(p=>`<p style="margin:0 0 8px">${p.replace(/\n/g,'<br>')}</p>`).join('');
+}
+
+/* =========================================================
+   NOTES
+   ========================================================= */
+function getNoteText(n){
+  const found = LS.notes.find(x=>x.passage===state.passage && x.verse===n);
+  return found?found.text:'';
+}
+function saveNote(n){
+  const text = document.getElementById('noteInput').value.trim();
+  const p = PASSAGES[state.passage];
+  const v = p.verses.find(x=>x.n===n);
+  const ref = `${p.book} ${p.ref.match(/\d+/)[0]}:${n}`;
+  let notes = LS.notes.filter(x=>!(x.passage===state.passage && x.verse===n));
+  if(text){
+    notes.push({passage:state.passage, verse:n, ref, vtext:v.t, text, ts:Date.now()});
+    cloud.pushNote({author:getAuthor(), passage:state.passage, verse:n, ref, vtext:v.t, body:text, updated_at:new Date().toISOString()});
+    toast(cloud.ready?'Saved & synced ✓':'Saved to My Notes ✓');
+  } else {
+    cloud.delNote(state.passage, n);
+    toast('Note cleared');
+  }
+  LS.notes = notes;
+  renderScripture();
+}
+function shareNote(n){
+  const text = document.getElementById('noteInput').value.trim();
+  if(!text){ toast('Write a reflection first ✍️'); return; }
+  if(!getAuthor()){ showNameModal(); return; }
+  saveNote(n);
+  const p = PASSAGES[state.passage];
+  const v = p.verses.find(x=>x.n===n);
+  const ref = `${p.book} ${p.ref.match(/\d+/)[0]}:${n}`;
+  const me = getAuthor();
+  // optimistic local copy, then sync
+  const comm = getCommunity();
+  comm.unshift({ref, vtext:`“${v.t}”`, body:text, who:me, color:colorFor(me), likes:0, amen:0, mine:true, ts:Date.now()});
+  LS.comm = comm;
+  cloud.pushInsight({author:me, ref, vtext:`“${v.t}”`, body:text, likes:0, amen:0});
+  toast(cloud.ready?'Shared 🌿 (your partner will see it)':'Shared 🌿');
+  if(viewActive('community')) renderCommunity();
+}
+function renderNotes(){
+  const list = document.getElementById('notesList');
+  const notes = LS.notes.slice().sort((a,b)=>b.ts-a.ts);
+  if(!notes.length){ list.innerHTML = `<div class="empty-state">No notes yet.<br>Open a passage, tap a verse, and write your first reflection. ✍️</div>`; return; }
+  list.innerHTML='';
+  notes.forEach(nt=>{
+    const el=document.createElement('div'); el.className='ncard';
+    el.innerHTML = `<div class="ref">${nt.ref}</div>
+      <div class="vtext">“${nt.vtext}”</div>
+      <div class="body">${escapeHTML(nt.text)}</div>
+      <div class="foot"><span>${new Date(nt.ts).toLocaleDateString()}</span>
+      <span class="react"><button data-open>Open verse →</button></span></div>`;
+    el.querySelector('[data-open]').addEventListener('click',()=>{ openReader(nt.passage); setTimeout(()=>onVerseClick(nt.verse),60); });
+    list.appendChild(el);
+  });
+}
+
+/* =========================================================
+   COMMUNITY
+   ========================================================= */
+function getCommunity(){ return LS.comm || []; }
+function renderCommunity(){
+  const list = document.getElementById('commList');
+  const comm = getCommunity();
+  list.innerHTML='';
+  if(!comm.length){
+    list.innerHTML = `<div class="empty-state">No shared insights yet.<br>Open a verse, write a reflection, and tap <strong>Share with community</strong> — it'll appear here for both of you. 🌿</div>`;
+    return;
+  }
+  comm.forEach((c,i)=>{
+    const el=document.createElement('div'); el.className='ncard';
+    const initials = c.who.split(' ').map(s=>s[0]).join('').slice(0,2).toUpperCase();
+    el.innerHTML = `<div class="ref">${c.ref}</div>
+      <div class="vtext">${c.vtext}</div>
+      <div class="body">${escapeHTML(c.body)}</div>
+      <div class="foot">
+        <span class="avatar" style="background:${c.color}">${initials}</span>
+        <span>${c.who}${c.mine?' · you':''}</span>
+        <span class="react">
+          <button data-like>❤️ <span>${c.likes}</span></button>
+          <button data-amen>🙏 <span>${c.amen}</span></button>
+        </span>
+      </div>`;
+    el.querySelector('[data-like]').addEventListener('click',function(){ comm[i].likes++; LS.comm=comm; this.querySelector('span').textContent=comm[i].likes; cloud.react(comm[i].id,'likes',comm[i].likes); });
+    el.querySelector('[data-amen]').addEventListener('click',function(){ comm[i].amen++; LS.comm=comm; this.querySelector('span').textContent=comm[i].amen; cloud.react(comm[i].id,'amen',comm[i].amen); });
+    list.appendChild(el);
+  });
+}
+
+/* =========================================================
+   ICONS + HELPERS
+   ========================================================= */
+function icon(k){
+  const m={
+    map:'<path d="M9 2 3 4v12l6-2 6 2 6-2V2l-6 2-6-2Z"/><path d="M9 2v12M15 4v12"/>',
+    pic:'<rect x="3" y="3" width="18" height="14" rx="2"/><circle cx="8" cy="8" r="1.6"/><path d="M21 14l-5-4-7 6"/>',
+    book:'<path d="M4 4h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4Z"/><path d="M20 4h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7Z"/>',
+    spark:'<path d="M12 2v6M12 16v6M2 12h6M16 12h6M5 5l3 3M16 16l3 3M19 5l-3 3M8 16l-3 3"/>',
+    scroll:'<path d="M6 3h11a2 2 0 0 1 2 2v12M6 3a2 2 0 0 0-2 2v1h4M6 3a2 2 0 0 1 2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2"/>',
+    q:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17h.01"/>',
+    link:'<path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/>',
+    ai:'<circle cx="12" cy="12" r="9"/><path d="M8 10h8M8 14h5"/>',
+    pen:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+    shield:'<path d="M12 2 4 5v6c0 5 3.5 8 8 11 4.5-3 8-6 8-11V5Z"/><path d="M9 12l2 2 4-4"/>',
+  };
+  return `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${m[k]||''}</svg>`;
+}
+function escapeHTML(s){ return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+let toastT;
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* =========================================================
+   READ-ALOUD  (browser speech — great for low-literacy readers)
+   ========================================================= */
+function stopRead(){ if(window.speechSynthesis) speechSynthesis.cancel(); const b=document.getElementById('readAloud'); if(b) b.textContent='🔊 Read aloud'; }
+function toggleRead(){
+  const btn=document.getElementById('readAloud');
+  if(!('speechSynthesis' in window)){ toast('Read-aloud needs a modern browser'); return; }
+  if(speechSynthesis.speaking){ stopRead(); return; }
+  const p=PASSAGES[state.passage];
+  const text = p.verses.map(v=> state.level==='simple'?v.s:v.t.replace(/[“”]/g,'')).join(' ');
+  const u=new SpeechSynthesisUtterance(p.ref+'. '+text);
+  u.rate=.92; u.pitch=1;
+  u.onend=()=>{ btn.textContent='🔊 Read aloud'; };
+  speechSynthesis.speak(u);
+  btn.textContent='⏹ Stop';
+}
+document.getElementById('readAloud').addEventListener('click',toggleRead);
+
+/* =========================================================
+   BIBLE CHARACTERS  (small portrait avatars + study sessions)
+   ========================================================= */
+function portrait(skin,robe,hair){
+  return `<svg viewBox="0 0 60 60"><rect width="60" height="60" fill="#f1e8d4"/><path d="M12 60c0-12 8-18 18-18s18 6 18 18Z" fill="${robe}"/><circle cx="30" cy="26" r="13" fill="${skin}"/><path d="M17 24c0-9 6-13 13-13s13 4 13 13c0-4-3-6-6-6-2 0-3 1-7 1s-5-1-7-1c-3 0-6 2-6 6Z" fill="${hair}"/><circle cx="25" cy="26" r="1.6" fill="#3a2a1a"/><circle cx="35" cy="26" r="1.6" fill="#3a2a1a"/><path d="M26 32q4 3 8 0" stroke="#9c6b4a" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`;
+}
+const CHARS = {
+  david:    {name:"David",            era:"Israel's shepherd-king · ~1000 BC", art:portrait('#e3b58a','#7a2f3a','#3a2a1a'),
+             line:"A shepherd boy who became king — brave, musical, deeply flawed, called 'a man after God's own heart.'"},
+  moses:    {name:"Moses",            era:"Led Israel out of Egypt · ~1300 BC", art:portrait('#d9a878','#34315e','#b9b3a5'),
+             line:"A reluctant leader who met God in a burning bush and confronted Pharaoh to free a nation."},
+  ruth:     {name:"Ruth",             era:"A loyal Moabite widow · ~1100 BC", art:portrait('#e7bd92','#2f6f6a','#2a1c12'),
+             line:"A foreign widow whose loyal love wove her into the family line of King David — and of Jesus."},
+  jonah:    {name:"Jonah",            era:"The runaway prophet · ~760 BC", art:portrait('#e0b083','#557a4a','#2a2018'),
+             line:"A prophet who ran from God rather than preach mercy to his enemies — and learned how wide that mercy is."},
+  samaritan:{name:"The Samaritan Woman", era:"Met Jesus at the well · ~AD 27", art:portrait('#e7bd92','#9a6f2e','#241712'),
+             line:"An outsider Jesus sought out — who became the first person in John's Gospel to tell a whole town about Him."},
+  peter:    {name:"Peter",            era:"Fisherman & apostle · ~AD 30", art:portrait('#deb088','#3a5566','#4a4036'),
+             line:"An impulsive fisherman who denied Jesus three times — and was restored to lead the early church."},
+  abraham:  {name:"Abraham",          era:"Father of faith · ~2000 BC", art:portrait('#d9a878','#6b5a3a','#cfc7b8'),
+             line:"Left everything to follow a promise he wouldn't fully see — and became the father of a nation."},
+  esther:   {name:"Esther",           era:"Queen of Persia · ~480 BC", art:portrait('#e7bd92','#7a2f3a','#2a1c12'),
+             line:"An orphan turned queen who risked her life to save her people — 'for such a time as this.'"},
+  mary:     {name:"Mary",             era:"Mother of Jesus · ~5 BC", art:portrait('#e7bd92','#34315e','#241712'),
+             line:"A young woman whose quiet 'yes' to God changed the world."},
+  paul:     {name:"Paul",             era:"Apostle to the nations · ~AD 35", art:portrait('#deb088','#557a4a','#3a3026'),
+             line:"A fierce persecutor of Christians, stopped in his tracks and remade into the gospel's greatest missionary."},
+};
+
+/* =========================================================
+   STUDY SESSIONS  (curated, source-grounded outlines)
+   ========================================================= */
+const SESSIONS = {
+  /* ---- characters ---- */
+  david:{ title:"David — chosen, fallen, restored", kicker:"Character Study",
+    bigIdea:"God doesn't look for flawless people; He looks for honest hearts that keep returning to Him.",
+    openWith:"Think of someone the world overlooked who turned out to matter. What did everyone miss about them?",
+    read:[["1 Samuel 16:1–13","God chooses the youngest, overlooked son"],["1 Samuel 17","David and Goliath"],["2 Samuel 11–12","David's great sin and Nathan's rebuke"],["Psalm 51","David's prayer of repentance",'psalm23']],
+    context:"David, the youngest of eight sons of Jesse in Bethlehem, was anointed king by the prophet Samuel while still a shepherd boy. He killed the giant Goliath, served (and was hunted by) the jealous King Saul, and spent years as a fugitive before becoming Israel's greatest king around 1000 BC. He wrote many of the Psalms. Yet his affair with Bathsheba — and the murder of her husband — was a catastrophic failure. When confronted by Nathan, David broke and repented (Psalm 51). His line leads all the way to Jesus, 'the son of David.'",
+    observe:["In 1 Samuel 16:7, what does God say He looks at — versus what people look at?","How does young David explain why he isn't afraid of Goliath?","When Nathan confronts him, how does David respond?"],
+    interpret:["Why might God deliberately choose the overlooked youngest son?","David is called 'a man after God's own heart' yet sins terribly. How do you hold those two truths together?","What's the difference between Saul's response to being confronted and David's?"],
+    apply:["Where are you tempted to judge by 'outward appearance' — in others, or in yourself?","David's greatness wasn't sinlessness; it was how he responded when caught. How do you respond when you're in the wrong?","What 'giant' are you facing that you need to bring to God rather than fear?"],
+    takeaway:"A heart that runs back to God after failure is worth more than a record that never failed.",
+    pray:"Pray David's own words: 'Create in me a clean heart, O God, and renew a right spirit within me.' (Psalm 51:10)",
+    goDeeper:[["Psalm 23","David the shepherd — now the sheep",'psalm23'],["Matthew 1:1","Jesus, son of David"],["Acts 13:22","'a man after my heart'"]] },
+
+  moses:{ title:"Moses — God qualifies the called", kicker:"Character Study",
+    bigIdea:"God meets reluctant, 'unqualified' people and sends them anyway — His presence is the qualification.",
+    openWith:"Have you ever felt completely unqualified for something you were asked to do? What happened?",
+    read:[["Exodus 2","A baby saved from Pharaoh's decree"],["Exodus 3–4","The burning bush and Moses' excuses"],["Exodus 14","Crossing the Red Sea"],["Exodus 20","The Ten Commandments at Sinai"]],
+    context:"Born to Hebrew slaves under Pharaoh's death decree, Moses was hidden, then raised in Pharaoh's own household. After killing an Egyptian, he fled to Midian and spent 40 years as a shepherd. At the burning bush God called him — and Moses offered excuse after excuse ('Who am I?', 'I'm not eloquent'). God answered every objection with one promise: 'I will be with you.' Moses led Israel out of Egypt through the parted Red Sea and received the Law at Mount Sinai.",
+    observe:["List the excuses Moses gives God in Exodus 3–4.","What is God's repeated answer to those excuses?","What does God reveal as His name at the bush?"],
+    interpret:["Why might God call someone who feels so inadequate?","What does the burning bush that 'is not consumed' suggest about God?","Why give the people commandments only after rescuing them?"],
+    apply:["What 'I'm not good enough' excuse is holding you back right now?","Where do you need to hear God say 'I will be with you'?","Rescue came before rules. How does being loved first change how you obey?"],
+    takeaway:"God's call is not a measure of your ability — it's a promise of His presence.",
+    pray:"Tell God honestly where you feel unqualified, and ask for the assurance Moses received: 'I will be with you.'",
+    goDeeper:[["Hebrews 11:24–27","Moses' faith"],["John 1:17","Law through Moses, grace through Christ"],["Matthew 17:1–3","Moses at the Transfiguration"]] },
+
+  ruth:{ title:"Ruth — loyal love in a small story", kicker:"Character Study",
+    bigIdea:"Ordinary faithfulness and loyal love quietly become part of God's biggest plans.",
+    openWith:"When has someone stayed loyal to you when it cost them something? How did it feel?",
+    read:[["Ruth 1","Ruth refuses to leave Naomi"],["Ruth 2","Ruth gleans in Boaz's field"],["Ruth 3–4","Boaz the kinsman-redeemer"]],
+    context:"During a famine, an Israelite family left Bethlehem for Moab. There the sons married Moabite women — one of them Ruth. When the men died, Naomi decided to return home, destitute. Ruth, a foreigner, refused to abandon her: 'Where you go, I will go… your God will be my God.' In Bethlehem she gathered leftover grain in the field of Boaz, who, as a 'kinsman-redeemer,' married her and restored the family. Their son Obed became the grandfather of King David — placing this foreign widow in the ancestry of Jesus.",
+    observe:["What exactly does Ruth promise Naomi in 1:16–17?","How does Boaz treat Ruth, a foreign worker, in chapter 2?","Where is God directly mentioned acting — and where does He work behind the scenes?"],
+    interpret:["The Hebrew word 'hesed' means loyal, covenant love. Where do you see it in this story?","Why does it matter that Ruth is a Moabite — an outsider — in David's (and Jesus') family line?","What does a 'kinsman-redeemer' picture about God?"],
+    apply:["Where could you show costly loyalty to someone this week?","Ruth did small, faithful, unglamorous work. How might God be using your ordinary days?","Who are the 'outsiders' your community might be overlooking?"],
+    takeaway:"You don't need a big platform for God to use your faithfulness — just a loyal heart.",
+    pray:"Thank God that He weaves ordinary, faithful lives into His story, and ask for the loyal love (hesed) Ruth showed.",
+    goDeeper:[["Matthew 1:5","Ruth named in Jesus' genealogy"],["Boaz → Redeemer","Picture of Christ our Redeemer"],["Deuteronomy 24:19","The law of gleaning for the poor"]] },
+
+  jonah:{ title:"Jonah — the scandal of mercy", kicker:"Character Study",
+    bigIdea:"God's mercy is wider and more uncomfortable than we'd like — even our enemies are within its reach.",
+    openWith:"Has God, or life, ever asked you to do the one thing you really didn't want to do?",
+    read:[["Jonah 1","Jonah runs the opposite way",'jonah1'],["Jonah 2","A prayer from inside the fish"],["Jonah 3","Nineveh repents"],["Jonah 4","Jonah's anger at God's compassion"]],
+    context:"Jonah was a real prophet of Israel (mentioned in 2 Kings 14:25), active around 760 BC. God told him to warn Nineveh — capital of Assyria, the violent empire that terrorised Israel. Instead Jonah sailed for Tarshish, the far western edge of the known world. After a storm and three days inside a great fish, he finally preached; astonishingly, the whole city repented. But rather than rejoice, Jonah sulked — because he'd feared all along that God would forgive them. The book ends with God's question about compassion hanging in the air.",
+    observe:["Which direction is Nineveh, and which way does Jonah sail?","Who prays in chapter 1 — and who doesn't?","How does Jonah react when Nineveh actually repents?"],
+    interpret:["Jonah 4:2 reveals why Jonah really ran. What was it?","Why might God use a storm, a fish, and even a plant to teach one prophet?","The book ends on a question. Why leave it unanswered?"],
+    apply:["Is there a 'Nineveh' — a person or group — you'd rather God didn't forgive?","Where are you tempted to 'go to sleep' to avoid something you know God is asking?","How does it change you to realise God's mercy extends to people you resent?"],
+    takeaway:"The hardest part of grace can be watching it reach someone we think doesn't deserve it.",
+    pray:"Ask God to enlarge your heart toward someone you've written off — to see them the way He does.",
+    goDeeper:[["Jonah 1","Read it in the Study view",'jonah1'],["Matthew 12:40","Jesus and the 'sign of Jonah'"],["Luke 15:11","The father runs to the prodigal"]] },
+
+  samaritan:{ title:"The Samaritan Woman — sought and sent", kicker:"Character Study",
+    bigIdea:"Jesus seeks out the outsider — and the least likely person becomes the first to tell others about Him.",
+    openWith:"Who is someone people wrote off, but who surprised everyone? What changed them?",
+    read:[["John 4:1–26","The conversation at the well",'john4'],["John 4:27–42","She tells the whole town"]],
+    context:"Travelling through Samaria — a region most Jews went out of their way to avoid — Jesus stopped at Jacob's well at noon. A Samaritan woman came alone in the heat of the day, likely avoiding the other women. Jesus crossed three barriers to speak with her: she was a Samaritan (a despised rival people), a woman (a teacher wouldn't address one alone in public), and had a difficult past. He offered her 'living water.' She left her water jar, ran to the town, and many believed because of her testimony — making her the first evangelist in John's Gospel.",
+    observe:["How does Jesus open the conversation (John 4:7)?","What barriers exist between Jesus and this woman?","What does she do with her water jar — and why might that detail matter?"],
+    interpret:["Why might Jesus begin by asking HER for help rather than offering it first?","What is the 'living water' Jesus describes?","Why entrust the first 'mission' to someone with her reputation?"],
+    apply:["Who are the 'Samaritans' in your world — the people you quietly avoid?","She came for water and left having met God. What ordinary errand might God meet you in this week?","Is there a part of your story you think disqualifies you from being used? How does this challenge that?"],
+    takeaway:"No one is too far outside for Jesus to seek — or too broken for Him to send.",
+    pray:"Thank Jesus that He crosses every barrier to reach you, and ask for courage to share what you've found.",
+    goDeeper:[["John 4","Read it in the Study view",'john4'],["John 7:38","'Rivers of living water'"],["Luke 10:33","The Good Samaritan"]] },
+
+  peter:{ title:"Peter — failure isn't the final word", kicker:"Character Study",
+    bigIdea:"Jesus builds His church on a man who failed badly — restoration, not perfection, is the story.",
+    openWith:"Have you ever failed someone you love and feared the relationship couldn't recover?",
+    read:[["Matthew 14:22–33","Peter walks on water — then sinks"],["Matthew 16:13–23","'You are the Christ' — and 'Get behind me'"],["Luke 22:54–62","Peter denies Jesus three times"],["John 21:15–19","The risen Jesus restores Peter"]],
+    context:"Simon Peter was a fisherman from Galilee, brother of Andrew — impulsive, bold, and often wrong. He alone stepped out of the boat onto the water, then sank in fear. He confessed Jesus as the Messiah, then was rebuked moments later. On the night Jesus was arrested, Peter denied even knowing Him three times, and wept bitterly. But after the resurrection, Jesus met him on the shore and, three times, restored him — 'Do you love me? Feed my sheep.' Peter went on to preach at Pentecost and lead the early church.",
+    observe:["What makes Peter sink in Matthew 14?","How many times does Peter deny Jesus — and how many times does Jesus later ask 'Do you love me?'","What does Jesus tell Peter to do each time he answers?"],
+    interpret:["Why might Jesus mirror the three denials with three restorations?","What does it tell us that Jesus chose a public failure to lead?","Is there significance in restoration coming with a renewed calling, not just forgiveness?"],
+    apply:["Where do you 'sink' — start in faith but go under in fear?","Is there a failure you believe puts you beyond usefulness to God?","Jesus restores Peter by re-commissioning him. What might God be calling you back to?"],
+    takeaway:"Your worst failure is not bigger than Jesus' grace — or His call on your life.",
+    pray:"Hear Jesus ask you gently, 'Do you love me?' Answer Him honestly, and receive His 'Follow me.'",
+    goDeeper:[["Acts 2:14–41","Peter preaches at Pentecost"],["1 Peter 5:6–7","'Cast all your anxiety on him'"],["John 21:15","'Feed my sheep'"]] },
+
+  abraham:{ title:"Abraham — trusting a promise you can't yet see", kicker:"Character Study",
+    bigIdea:"Faith means stepping out on God's promise before you can see how it works out.",
+    openWith:"When have you had to commit to something before you could see the outcome? How did it feel?",
+    read:[["Genesis 12:1–9","The call to leave everything"],["Genesis 15","Counting the stars — the covenant"],["Genesis 22:1–18","The hardest test"]],
+    context:"Around 2000 BC, God told Abram (later Abraham) to leave his homeland, his security, and his family's gods to go to a land God would 'show him' — no map, just a promise. God pledged descendants as countless as the stars, though Abraham and Sarah were old and childless. Abraham 'believed Yahweh, and it was credited to him as righteousness' (15:6) — a verse the New Testament returns to again and again. His faith was real but not perfect; he stumbled badly at times. The climactic test came when God asked him to offer his long-awaited son Isaac — and provided a substitute at the last moment.",
+    observe:["What exactly does God ask Abraham to leave in 12:1, and what does he promise?","In chapter 15, how does God reassure Abraham's doubts?","How does Abraham respond when tested in chapter 22?"],
+    interpret:["Why might God call Abraham <em>away</em> from everything familiar before blessing him?","What does it mean that Abraham's <em>belief</em> — not his performance — was 'credited as righteousness'?","God provided a substitute on the mountain. What might that foreshadow?"],
+    apply:["Is God asking you to step out somewhere before you can see the whole path?","Where do you need to trust a promise of God you can't yet see fulfilled?","What 'Isaac' — something precious — are you holding tightly that God may be asking you to entrust to him?"],
+    takeaway:"Faith isn't certainty about the outcome; it's trust in the One who made the promise.",
+    pray:"Tell God one area where you'll trust him before you can see how it ends.",
+    goDeeper:[["Romans 4:18–22","Abraham, against all hope, believed"],["Hebrews 11:8–19","Abraham's faith honoured"],["Genesis 22:14","'Yahweh will provide'"]] },
+
+  esther:{ title:"Esther — for such a time as this", kicker:"Character Study",
+    bigIdea:"God can place you exactly where you're needed — and courage means using it, whatever the cost.",
+    openWith:"Have you ever been in the right place to help — but it was risky or costly to act?",
+    read:[["Esther 2:1–18","An orphan becomes queen"],["Esther 4","'For such a time as this'"],["Esther 7","Courage at the king's table"]],
+    context:"Esther was a young Jewish woman in exile in the Persian Empire (~480 BC), an orphan raised by her cousin Mordecai. Through unlikely events she became queen to King Xerxes — while hiding her Jewish identity. When a powerful official, Haman, plotted to exterminate the Jews, Mordecai urged her to plead with the king, even though approaching him uninvited could mean death. His famous challenge: 'Who knows whether you haven't come to the kingdom for such a time as this?' Esther fasted, then risked everything — and her people were saved. Strikingly, the book never once mentions God's name, yet his hidden hand is everywhere.",
+    observe:["What is the danger Esther faces if she approaches the king (chapter 4)?","How does Mordecai persuade her to act?","How does Esther finally confront Haman in chapter 7?"],
+    interpret:["The book never names God. Why might it still be a book about God's providence?","What does 'for such a time as this' suggest about where God places people?","How do Esther's fasting and planning fit together with trusting God?"],
+    apply:["Where might God have placed <em>you</em> 'for such a time as this'?","Is there a costly act of courage you've been avoiding?","Who could you speak up for this week, even at some risk to yourself?"],
+    takeaway:"God positions ordinary people for pivotal moments — courage is saying yes when it costs.",
+    pray:"Ask God to show you where you've been placed to help, and for the courage to act.",
+    goDeeper:[["Esther 4:14","'For such a time as this'"],["Proverbs 31:8–9","Speak up for the voiceless"],["Romans 8:28","God works in all things"]] },
+
+  mary:{ title:"Mary — the courage of an ordinary 'yes'", kicker:"Character Study",
+    bigIdea:"God works through the humble availability of ordinary people who say yes to him.",
+    openWith:"When has saying 'yes' to something good also meant accepting real uncertainty or cost?",
+    read:[["Luke 1:26–38","The angel's announcement",'luke2'],["Luke 1:46–55","Mary's song, the Magnificat"],["John 19:25–27","Mary at the cross"]],
+    context:"Mary was a young woman, probably in her teens, in the small town of Nazareth, pledged to be married to Joseph. The angel Gabriel told her she would bear God's Son — news that, for an unmarried woman, risked her reputation, her marriage, and possibly her safety. Her response was simple trust: 'I am the Lord's servant. May it happen to me according to your word.' Her song (the Magnificat) celebrates a God who lifts up the humble and brings down the proud. Years later she stood at the foot of the cross, watching her son die — her 'yes' carried all the way to its hardest end.",
+    observe:["What does Gabriel tell Mary, and how does she respond (1:38)?","In her song (1:46–55), who does Mary say God lifts up, and who does he bring down?","Where do we find Mary in John 19?"],
+    interpret:["Mary's 'yes' came with real risk. What does that tell us about the cost of obedience?","Why might God choose a humble, unknown young woman for such a role?","How does the Magnificat reveal what Mary believed about God?"],
+    apply:["Is there a 'yes' to God you're holding back because of what it might cost?","Where do you need to trust God with something you don't fully understand?","Mary stayed to the end, even at the cross. Where is God asking you to stay faithful through something hard?"],
+    takeaway:"God's great works often begin with one ordinary person's willing 'yes.'",
+    pray:"Offer God your own 'I am your servant' in one specific area of your life.",
+    goDeeper:[["Luke 2:1–7","The birth she said yes to",'luke2'],["1 Samuel 2:1–10","Hannah's song, echoed by Mary"],["Luke 2:19","Mary 'treasured up all these things'"]] },
+
+  paul:{ title:"Paul — grace strong enough to remake an enemy", kicker:"Character Study",
+    bigIdea:"No one is beyond the reach of grace — and God's power shows up most in our weakness.",
+    openWith:"Do you know anyone who changed so completely you could barely recognise them? What happened?",
+    read:[["Acts 9:1–19","Stopped on the Damascus road"],["Philippians 3:4–9","Counting it all loss"],["2 Corinthians 12:7–10","Strength in weakness"]],
+    context:"Saul of Tarsus was a brilliant, zealous Pharisee who violently persecuted the early church — approving executions and dragging Christians from their homes. On the road to Damascus to arrest more believers, the risen Jesus confronted him in blinding light: 'Saul, Saul, why do you persecute me?' Blinded for three days, then healed, he was utterly transformed into Paul, the tireless apostle to the Gentiles who wrote much of the New Testament — often from prison. He carried a 'thorn in the flesh' he begged God to remove; God's answer reframed his whole life: 'My grace is sufficient for you, for my power is made perfect in weakness.'",
+    observe:["What is Saul doing when Jesus stops him (Acts 9:1–2)?","In Philippians 3, what does Paul now count as 'loss'?","How does God respond to Paul's plea about his 'thorn' (2 Cor 12:9)?"],
+    interpret:["If grace could reach Paul — a violent persecutor — who is beyond it?","Why might God leave Paul with a weakness rather than removing it?","What does Paul mean that he'll 'boast' in his weaknesses?"],
+    apply:["Is there someone you've written off as too far gone for God? How does Paul challenge that?","Where do you feel weak right now — and how might that be where grace works?","What might you need to 'count as loss' to follow Jesus more freely?"],
+    takeaway:"Grace can turn the least likely person into the most fruitful — and it works through weakness, not around it.",
+    pray:"Bring God a weakness you'd love removed, and ask to know his grace as 'sufficient' there.",
+    goDeeper:[["1 Timothy 1:15–16","'The worst of sinners'"],["Galatians 1:13–24","Paul tells his own story"],["2 Cor 5:17","'A new creation'"]] },
+};
+/* map our reader passages to a session key */
+const PASSAGE_SESSION = { psalm23:'_psalm23', jonah1:'jonah', john4:'samaritan' };
+/* passage-specific sessions reuse insight content */
+function passageSession(key){
+  const p=PASSAGES[key], I=p.insight;
+  const COMMON = {
+    psalm23:{ open:"When you feel overwhelmed, what or who do you reach for first?",
+      takeaway:"You are not alone in the valley — the Shepherd walks through it with you.",
+      pray:"Read Psalm 23 slowly as your own prayer, pausing on the line you most need today." },
+    jonah1:{ open:"When was the last time you ran from something you knew you should face?",
+      takeaway:"You can run from God's call, but not from God's reach — or His mercy.",
+      pray:"Ask God for willingness to go where He sends, even toward people you'd rather avoid." },
+    john4:{ open:"Has a single conversation ever changed the direction of your life?",
+      takeaway:"Jesus meets you exactly where you are — and offers a thirst that's finally satisfied.",
+      pray:"Tell Jesus what you're truly thirsty for, and ask Him for His 'living water'." },
+    genesis1:{ open:"When you look at the night sky or the sea, what do you feel?",
+      takeaway:"The same God who spoke light into darkness is at work bringing order to your life.",
+      pray:"Thank God for making a good world — and ask him to bring his light into a dark place you're facing." },
+    luke2:{ open:"What's the humblest place you've ever found something precious?",
+      takeaway:"God shows up in the small, overlooked places — so you can find him right where you are.",
+      pray:"Welcome Jesus into the ordinary, unglamorous parts of your life today." },
+    luke15:{ open:"Who is the most undeserved welcome-home you've ever seen or received?",
+      takeaway:"You can come home to God just as you are — he's already running toward you.",
+      pray:"If you've wandered, take one step home today, and let God's welcome meet you." },
+    philippians4:{ open:"Where does anxiety tend to show up in your body and your day?",
+      takeaway:"Anxiety handed to God, specifically and thankfully, is met with a peace beyond explaining.",
+      pray:"Name one specific worry to God right now, with one thing you're thankful for, and ask for his peace." },
+  }[key];
+  return {
+    title:p.ref+" — a guided study", kicker:"Passage Study",
+    bigIdea:stripTags(I.meaning),
+    openWith:COMMON.open,
+    read:[[p.ref, p.blurb, key]],
+    context:stripTags(I.context),
+    observe:["Read the passage twice — once normally, once slowly. What stands out?","Who are the people involved, and what does each one do or say?","What words, images, or ideas repeat?"],
+    interpret:I.questions.map(stripTags),
+    apply:["What is one truth here you can carry into this week?","Is there something to start, stop, believe, or pray differently?","Who could you share this insight with?"],
+    takeaway:COMMON.takeaway, pray:COMMON.pray,
+    goDeeper:I.xrefs.map(x=>[x[0],x[1]]),
+  };
+}
+function stripTags(s){ return s.replace(/<[^>]+>/g,''); }
+
+/* verse-level session */
+function verseSession(passKey, vn){
+  const p=PASSAGES[passKey]; const v=p.verses.find(x=>x.n===vn)||p.verses[0];
+  const base=passageSession(passKey);
+  base.kicker="Verse Study"; base.title=`${p.book} ${p.ref.match(/\d+/)[0]}:${v.n} — go deep on one verse`;
+  base.read=[[`${p.book} ${p.ref.match(/\d+/)[0]}:${v.n}`, '“'+v.t+'”', passKey]];
+  base.bigIdea=v.s;
+  base.observe=["Read just this verse five times slowly. Which word carries the most weight?","Put the verse in your own words.","What comes right before and after it — how does the context shape its meaning?"];
+  return base;
+}
+
+/* template for free-typed references we don't have data for */
+function templateSession(mode, label){
+  const modeWord = {chapter:'chapter',passage:'passage',verse:'verse',character:'character'}[mode];
+  return { generated:true, kicker:(modeWord.charAt(0).toUpperCase()+modeWord.slice(1))+" Study",
+    title:label+" — study session",
+    bigIdea:"A ready-to-use framework for studying "+label+". In the full app, the AI fills this in with source-grounded specifics and citations; here is a dependable structure you can lead with today.",
+    openWith:"What do you already know — or assume — about "+label+"? Where might that come from?",
+    read:[[label, mode==='character'?"Read 2–3 key passages about this person's life.":"Read it slowly, twice — aloud if you can."]],
+    context:"Historical and cultural background for "+label+" would appear here — who, when, where, and why it mattered to the first hearers — always with citations so you can check it.",
+    observe:["What does the text actually say? Note the who, what, where, and when.","What words or images repeat or stand out?","What surprises you, or seems strange or hard?"],
+    interpret:["What did this mean to its first readers, in their world?","What does it reveal about God? About people?","Why might it sit where it does in the bigger biblical story?"],
+    apply:["What one truth here can you carry into this week?","Is there something to do, stop, believe, or pray differently?","Who could you share this with?"],
+    takeaway:"Even a simple, repeatable framework — read, observe, interpret, apply, pray — turns any passage into a real study.",
+    pray:"Ask God to open your eyes to see something new in "+label+", and to change you through it.",
+    goDeeper:[] };
+}
+
+/* =========================================================
+   CREATE-SESSION  UI
+   ========================================================= */
+let builder = { mode:'chapter', pickKey:'psalm23', pickLabel:'Psalm 23', freeText:'', charKey:null,
+                verseN:1, length:'Quick · 15 min', setting:'Personal', focus:'Devotional' };
+
+function renderCreate(){
+  renderModePick();
+  renderSaved();
+}
+document.getElementById('modeSeg').addEventListener('click',e=>{
+  if(!e.target.dataset.mode) return;
+  builder.mode=e.target.dataset.mode;
+  document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b===e.target));
+  renderModePick();
+});
+document.querySelectorAll('.opts .seg').forEach(seg=>{
+  seg.addEventListener('click',e=>{
+    if(!e.target.dataset.val) return;
+    builder[seg.dataset.opt]=e.target.dataset.val;
+    seg.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===e.target));
+  });
+});
+
+function renderModePick(){
+  const wrap=document.getElementById('modePick');
+  if(builder.mode==='character'){
+    let chips='';
+    for(const k in CHARS){ const c=CHARS[k];
+      chips+=`<div class="charchip ${builder.charKey===k?'sel':''}" data-char="${k}">
+        <div class="cav">${c.art}</div>
+        <div><div class="cn">${c.name}</div><div class="ce">${c.era}</div></div></div>`;
+    }
+    wrap.innerHTML=`<p style="margin:0 0 8px;color:var(--muted);font-size:13.5px">Pick a person whose story you want to walk through:</p>
+      <div class="charchips">${chips}</div>`;
+    wrap.querySelectorAll('.charchip').forEach(ch=>ch.addEventListener('click',()=>{
+      builder.charKey=ch.dataset.char; renderModePick();
+    }));
+  } else {
+    const opts=Object.keys(PASSAGES).map(k=>`<option value="${k}">${PASSAGES[k].ref}</option>`).join('');
+    let verseSel='';
+    if(builder.mode==='verse'){
+      const pk=builder.pickKey in PASSAGES?builder.pickKey:'psalm23';
+      const vs=PASSAGES[pk].verses.map(v=>`<option value="${v.n}">v${v.n}</option>`).join('');
+      verseSel=`<select id="verseSel" title="verse">${vs}</select>`;
+    }
+    const noun={chapter:'chapter',passage:'passage',verse:'verse'}[builder.mode];
+    wrap.innerHTML=`<p style="margin:0 0 8px;color:var(--muted);font-size:13.5px">Choose a built-in ${noun}:</p>
+      <div class="row2">
+        <select id="passSel">${opts}</select>${verseSel}
+        <span class="or">— or —</span>
+        <input type="text" id="freeRef" placeholder="type any reference, e.g. Genesis 1 or Romans 8:28">
+      </div>`;
+    const passSel=wrap.querySelector('#passSel'); passSel.value = builder.pickKey in PASSAGES?builder.pickKey:'psalm23';
+    builder.pickKey=passSel.value;
+    passSel.addEventListener('change',()=>{ builder.pickKey=passSel.value; builder.freeText=''; if(builder.mode==='verse') renderModePick(); });
+    const vsel=wrap.querySelector('#verseSel'); if(vsel){ vsel.value=builder.verseN; vsel.addEventListener('change',()=>builder.verseN=+vsel.value); }
+    wrap.querySelector('#freeRef').addEventListener('input',e=>builder.freeText=e.target.value.trim());
+  }
+}
+
+document.getElementById('genBtn').addEventListener('click',generateSession);
+
+function currentSessionData(){
+  if(builder.mode==='character'){
+    if(builder.charKey && SESSIONS[builder.charKey]) return SESSIONS[builder.charKey];
+    if(builder.charKey && CHARS[builder.charKey]) return templateSession('character',CHARS[builder.charKey].name);
+    return null; // none picked
+  }
+  if(builder.freeText) return templateSession(builder.mode, builder.freeText);
+  if(builder.mode==='verse') return verseSession(builder.pickKey, builder.verseN);
+  if(builder.mode==='passage'||builder.mode==='chapter') return passageSession(builder.pickKey);
+  return null;
+}
+
+async function generateSession(){
+  const badges=[builder.length,builder.setting,builder.focus];
+  // figure out whether this is a free-typed topic we'd send to Claude
+  let freeLabel=null;
+  if(builder.mode==='character'){
+    if(!builder.charKey){ toast('Pick a character first 🧍'); return; }
+    if(!SESSIONS[builder.charKey]) freeLabel = (CHARS[builder.charKey]||{}).name;
+  } else {
+    if(builder.freeText) freeLabel = builder.freeText;
+  }
+  if(freeLabel && getKey()){
+    renderSessionLoading(freeLabel);
+    try{
+      const d = await aiSession(builder.mode, freeLabel);
+      renderSession(d, badges, false);
+    }catch(e){
+      renderSession(templateSession(builder.mode, freeLabel), badges, false);
+      toast('Showing a template (AI: '+String(e.message||e).slice(0,60)+')');
+    }
+    document.getElementById('sessionOut').scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
+  const data=currentSessionData();
+  if(!data){ toast(builder.mode==='character'?'Pick a character first 🧍':'Choose or type a reference'); return; }
+  renderSession(data, badges, false);
+  document.getElementById('sessionOut').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderSessionLoading(label){
+  const out=document.getElementById('sessionOut');
+  out.innerHTML = `<div class="session"><div class="sbody" style="padding:42px 28px;text-align:center;color:var(--muted)">
+    <span class="spin"></span> Claude is writing your study on <strong>${escapeHTML(label)}</strong>…
+    <div style="font-size:12.5px;margin-top:8px">Grounding it in Scripture and historical context.</div></div></div>`;
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function aiSession(mode, label){
+  const sys = "You are a careful Bible study curriculum writer for the Illumine app. Produce accurate, source-grounded study sessions in line with historic Christian teaching. NEVER invent Scripture references, quotes, dates, or facts; where something is interpretation or debated, mark it gently. Keep language warm and accessible to brand-new readers. Output ONLY a single valid JSON object — no markdown fences, no commentary before or after.";
+  const user = `Create a Bible study session for the ${mode} "${label}".`+
+    ` Audience: ${builder.setting}. Length: ${builder.length}. Emphasis: ${builder.focus}.`+
+    ` Return ONLY JSON with exactly these fields:\n`+
+    `{"kicker":"<e.g. 'Passage Study' or 'Character Study'>","title":"<session title>","bigIdea":"<one sentence main point>",`+
+    `"openWith":"<one warm icebreaker question>",`+
+    `"read":[["<reference>","<short note>"]],`+
+    `"context":"<one paragraph of historical/cultural background>",`+
+    `"observe":["<q1>","<q2>","<q3>"],"interpret":["<q1>","<q2>","<q3>"],"apply":["<q1>","<q2>","<q3>"],`+
+    `"takeaway":"<one sentence>","pray":"<one short prayer prompt>",`+
+    `"goDeeper":[["<reference>","<short note>"]]}`+
+    ` Use 2-4 items in "read" and 2-3 in "goDeeper".`;
+  const text = await callClaude({ system: sys, user, max_tokens: 2000 });
+  const d = parseLooseJSON(text);
+  // light validation / defaults so rendering never crashes
+  d.kicker = d.kicker || (mode.charAt(0).toUpperCase()+mode.slice(1)+' Study');
+  d.read = Array.isArray(d.read) ? d.read : [];
+  d.goDeeper = Array.isArray(d.goDeeper) ? d.goDeeper : [];
+  ['observe','interpret','apply'].forEach(k=>{ if(!Array.isArray(d[k])) d[k]=[]; });
+  return d;
+}
+function parseLooseJSON(t){
+  let s=(t||'').trim();
+  const a=s.indexOf('{'), b=s.lastIndexOf('}');
+  if(a>=0 && b>a) s=s.slice(a,b+1);
+  return JSON.parse(s);
+}
+
+function qList(arr){ return `<ul class="qlist">${arr.map(q=>`<li>${q}</li>`).join('')}</ul>`; }
+function readList(arr){
+  return arr.map(r=>{
+    const jump = r[2] ? `data-jump="${r[2]}"` : '';
+    return `<div class="readitem"><span class="rref" ${jump}>${r[0]}</span><span class="rnote">${r[1]||''}</span></div>`;
+  }).join('');
+}
+
+function renderSession(d, badges, isSaved){
+  const focusNote = !isSaved && builder.focus==='Historical'
+    ? `<div class="grouptip">🏛️ <strong>Historical focus:</strong> spend extra time on the Context and 'Observe' sections, and look up the places on the map in the Study view.</div>` : '';
+  const groupTip = !isSaved && builder.setting==='Small group'
+    ? `<div class="grouptip">👥 <strong>Group tip:</strong> read the passage aloud together, then give everyone 60 seconds of silence before the first question. Let 2–3 people answer each question before moving on.</div>`
+    : (!isSaved && builder.setting==='Family / kids'
+    ? `<div class="grouptip">👨‍👩‍👧 <strong>Family tip:</strong> use the 'Plain English' reading, act out one scene, and pick just one question per person. Keep it to 10–15 minutes.</div>` : '');
+  const warn = d.generated ? `<div class="genwarn">${icon('shield')}<span>This is a structural template. In the full app, Claude fills the Context, Big Idea, and questions with specific, cited detail for <em>${escapeHTML(d.title)}</em>.</span></div>` : '';
+
+  const html = `<div class="session" id="sessionCard">
+    <div class="shead">
+      <div class="kick">${d.kicker}</div>
+      <h2>${d.title}</h2>
+      <div class="badges">${badges.map(b=>`<span class="badge">${b}</span>`).join('')}</div>
+    </div>
+    <div class="sbody">
+      ${warn}
+      <div class="sblock"><div class="h">${icon('spark')} Big idea</div><p class="bigidea">${d.bigIdea}</p></div>
+      <div class="sblock"><div class="h">${icon('q')} Open with</div><p>${d.openWith}</p></div>
+      <div class="sblock"><div class="h">${icon('book')} Read together</div>${readList(d.read)}</div>
+      <div class="sblock"><div class="h">${icon('scroll')} Background &amp; context</div><p>${d.context}</p>${focusNote}</div>
+      <div class="sblock"><div class="h">${icon('pic')} Observe — what does it say?</div>${qList(d.observe)}</div>
+      <div class="sblock"><div class="h">${icon('book')} Interpret — what does it mean?</div>${qList(d.interpret)}${groupTip}</div>
+      <div class="sblock"><div class="h">${icon('pen')} Apply — what does it mean for me?</div>${qList(d.apply)}</div>
+      <div class="sblock"><div class="h">${icon('spark')} Key takeaway</div><p style="font-weight:600">${d.takeaway}</p></div>
+      <div class="sblock"><div class="h">${icon('shield')} Pray</div><div class="pray">${d.pray}</div></div>
+      ${d.goDeeper&&d.goDeeper.length?`<div class="sblock"><div class="h">${icon('link')} Go deeper</div>${d.goDeeper.map(x=>`<span class="xref" ${x[2]?`data-jump="${x[2]}"`:''} title="${x[1]||''}">${x[0]}</span>`).join('')}</div>`:''}
+    </div>
+    <div class="sactions">
+      ${isSaved?'':'<button class="btn primary" id="saveSess">💾 Save session</button>'}
+      <button class="btn ghost" onclick="window.print()">🖨️ Print / PDF</button>
+      <button class="btn gold" id="copySess">📋 Copy as text</button>
+      ${isSaved?'<button class="btn ghost" id="delSess">🗑 Delete</button>':''}
+    </div>
+  </div>`;
+  document.getElementById('sessionOut').innerHTML = html;
+
+  // wire jumps
+  document.querySelectorAll('#sessionOut [data-jump]').forEach(el=>el.addEventListener('click',()=>{
+    const k=el.dataset.jump; if(PASSAGES[k]) openReader(k);
+  }));
+  const sv=document.getElementById('saveSess'); if(sv) sv.addEventListener('click',()=>saveSession(d,badges));
+  document.getElementById('copySess').addEventListener('click',()=>copySession(d));
+  const del=document.getElementById('delSess'); if(del) del.addEventListener('click',()=>{ deleteSession(d.title); document.getElementById('sessionOut').innerHTML=''; });
+}
+
+function sessionToText(d){
+  const lines=[d.title.toUpperCase(),d.kicker,'',
+    'BIG IDEA\n'+d.bigIdea,'',
+    'OPEN WITH\n'+d.openWith,'',
+    'READ TOGETHER\n'+d.read.map(r=>'• '+r[0]+(r[1]?' — '+r[1]:'')).join('\n'),'',
+    'BACKGROUND & CONTEXT\n'+d.context,'',
+    'OBSERVE\n'+d.observe.map((q,i)=>(i+1)+'. '+q).join('\n'),'',
+    'INTERPRET\n'+d.interpret.map((q,i)=>(i+1)+'. '+q).join('\n'),'',
+    'APPLY\n'+d.apply.map((q,i)=>(i+1)+'. '+q).join('\n'),'',
+    'KEY TAKEAWAY\n'+d.takeaway,'',
+    'PRAY\n'+d.pray,'',
+    d.goDeeper&&d.goDeeper.length?'GO DEEPER\n'+d.goDeeper.map(x=>'• '+x[0]+(x[1]?' — '+x[1]:'')).join('\n'):'',
+    '','— Created with Illumine (prototype)'];
+  return lines.join('\n');
+}
+function copySession(d){
+  const txt=sessionToText(d);
+  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(()=>toast('Copied to clipboard 📋'),()=>fallbackCopy(txt)); }
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt){ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); toast('Copied 📋');}catch(e){toast('Copy not supported here');} ta.remove(); }
+
+/* saved sessions */
+const SLS={ get:()=>JSON.parse(localStorage.getItem('ill_sessions')||'[]'), set:v=>localStorage.setItem('ill_sessions',JSON.stringify(v)) };
+function saveSession(d,badges){
+  let s=SLS.get().filter(x=>x.data.title!==d.title);
+  s.unshift({data:d,badges,ts:Date.now()}); SLS.set(s);
+  toast('Session saved ✓'); renderSaved();
+}
+function deleteSession(title){ SLS.set(SLS.get().filter(x=>x.data.title!==title)); toast('Session deleted'); renderSaved(); }
+function renderSaved(){
+  const wrap=document.getElementById('savedWrap'); const s=SLS.get();
+  if(!s.length){ wrap.innerHTML=''; return; }
+  wrap.innerHTML=`<h2 style="font-family:var(--serif);color:var(--indigo);font-size:21px;margin:0 0 12px">📚 My saved sessions</h2>
+    <div class="savedrow">${s.map(x=>`<div class="ncard" data-open-sess="${escapeHTML(x.data.title)}" style="cursor:pointer">
+      <div class="tag" style="color:var(--gold);font-size:11px;font-weight:700;text-transform:uppercase">${x.data.kicker}</div>
+      <div class="ref" style="margin:3px 0 5px">${x.data.title}</div>
+      <div class="vtext" style="font-style:normal">${x.data.bigIdea.slice(0,90)}${x.data.bigIdea.length>90?'…':''}</div>
+      <div class="foot"><span>${new Date(x.ts).toLocaleDateString()}</span><span class="react"><button>Open →</button></span></div>
+    </div>`).join('')}</div>`;
+  wrap.querySelectorAll('[data-open-sess]').forEach(c=>c.addEventListener('click',()=>{
+    const item=SLS.get().find(x=>x.data.title===c.dataset.openSess);
+    if(item){ renderSession(item.data,item.badges,true); document.getElementById('sessionOut').scrollIntoView({behavior:'smooth'}); }
+  }));
+}
+
+/* =========================================================
+   IDENTITY + STARTUP
+   ========================================================= */
+function showNameModal(){
+  const m=document.getElementById('nameModal');
+  document.getElementById('nameInput').value = getAuthor();
+  m.classList.add('show');
+  setTimeout(()=>document.getElementById('nameInput').focus(),50);
+}
+function hideNameModal(){ document.getElementById('nameModal').classList.remove('show'); }
+function saveName(){
+  const v=document.getElementById('nameInput').value.trim();
+  if(!v){ toast('Please enter a name'); return; }
+  setAuthor(v);
+  document.getElementById('nameLabel').textContent=v;
+  hideNameModal();
+  cloud.init();
+}
+document.getElementById('nameSave').addEventListener('click',saveName);
+document.getElementById('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
+document.getElementById('nameChip').addEventListener('click',showNameModal);
+
+renderLibrary();
+openReader('psalm23'); go('library');
+
+if(getAuthor()){
+  document.getElementById('nameLabel').textContent=getAuthor();
+  cloud.init();
+} else {
+  showNameModal();
+}
+</script>
+</body>
+</html>
