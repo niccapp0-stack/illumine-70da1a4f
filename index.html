@@ -814,6 +814,7 @@ const DYNAMIC = {};
 function PA(k){ return PASSAGES[k] || DYNAMIC[k]; }
 const TRANSLATIONS = [
   {id:'web',    name:'World English (modern)'},
+  {id:'esv',    name:'English Standard (ESV)'},
   {id:'bbe',    name:'Basic English (simplest)'},
   {id:'kjv',    name:'King James (traditional)'},
   {id:'asv',    name:'American Standard 1901'},
@@ -822,6 +823,8 @@ const TRANSLATIONS = [
   {id:'ylt',    name:'Young’s Literal (NT only)'},
   {id:'oeb-us', name:'Open English Bible'},
 ];
+const RELAY = 'https://hcqrkctlopstntkmizio.supabase.co/functions/v1/bibletext';
+const RELAY_VERSIONS = new Set(['esv','nlt']); // licensed versions via the private relay
 const BOOKS = [["Genesis",50],["Exodus",40],["Leviticus",27],["Numbers",36],["Deuteronomy",34],["Joshua",24],["Judges",21],["Ruth",4],["1 Samuel",31],["2 Samuel",24],["1 Kings",22],["2 Kings",25],["1 Chronicles",29],["2 Chronicles",36],["Ezra",10],["Nehemiah",13],["Esther",10],["Job",42],["Psalms",150],["Proverbs",31],["Ecclesiastes",12],["Song of Solomon",8],["Isaiah",66],["Jeremiah",52],["Lamentations",5],["Ezekiel",48],["Daniel",12],["Hosea",14],["Joel",3],["Amos",9],["Obadiah",1],["Jonah",4],["Micah",7],["Nahum",3],["Habakkuk",3],["Zephaniah",3],["Haggai",2],["Zechariah",14],["Malachi",4],["Matthew",28],["Mark",16],["Luke",24],["John",21],["Acts",28],["Romans",16],["1 Corinthians",16],["2 Corinthians",13],["Galatians",6],["Ephesians",6],["Philippians",4],["Colossians",4],["1 Thessalonians",5],["2 Thessalonians",3],["1 Timothy",6],["2 Timothy",4],["Titus",3],["Philemon",1],["Hebrews",13],["James",5],["1 Peter",5],["2 Peter",3],["1 John",5],["2 John",1],["3 John",1],["Jude",1],["Revelation",22]].map(b=>({name:b[0],ch:b[1]}));
 let bibleLoc = {book:'Genesis', chapter:1, trans:'web'};
 
@@ -842,14 +845,23 @@ async function loadBible(book, chapter, trans){
   const tname=(TRANSLATIONS.find(t=>t.id===trans)||{}).name||trans;
   if(status){ status.innerHTML=`<span class="spin"></span> Loading ${book} ${chapter} (${tname})…`; }
   try{
-    const url=`https://bible-api.com/${encodeURIComponent(book+' '+chapter)}?translation=${encodeURIComponent(trans)}`;
-    const r=await fetch(url);
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const d=await r.json();
-    if(!d.verses || !d.verses.length) throw new Error('no text (this translation may not cover that book)');
-    const verses=d.verses.map(v=>{ const t=(v.text||'').replace(/\s+/g,' ').trim(); return {n:v.verse, t, s:t}; });
+    let verses, copyright='';
+    if(RELAY_VERSIONS.has(trans)){
+      const r=await fetch(`${RELAY}?version=${encodeURIComponent(trans)}&book=${encodeURIComponent(book)}&chapter=${encodeURIComponent(chapter)}`);
+      const d=await r.json();
+      if(d.error) throw new Error(d.error);
+      verses=(d.verses||[]).map(v=>({n:v.n, t:v.t, s:v.t}));
+      copyright=d.copyright||'';
+    } else {
+      const r=await fetch(`https://bible-api.com/${encodeURIComponent(book+' '+chapter)}?translation=${encodeURIComponent(trans)}`);
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      const d=await r.json();
+      if(!d.verses || !d.verses.length) throw new Error('no text (this translation may not cover that book)');
+      verses=d.verses.map(v=>{ const t=(v.text||'').replace(/\s+/g,' ').trim(); return {n:v.verse, t, s:t}; });
+    }
+    if(!verses.length) throw new Error('no text for that book/chapter');
     const key=`bible:${book.toLowerCase()}:${chapter}`;
-    DYNAMIC[key]={ book, ref:`${book} ${chapter}`, sub:tname, tag:tname, transName:tname, trans, dynamic:true, artKey:null, blurb:'', verses, insight:null };
+    DYNAMIC[key]={ book, ref:`${book} ${chapter}`, sub:tname, tag:tname, transName:tname, trans, dynamic:true, artKey:null, blurb:'', verses, insight:null, copyright };
     bibleLoc={book, chapter, trans};
     if(status) status.textContent='';
     state.level='scripture';
@@ -901,6 +913,12 @@ function renderScripture(){
     span.addEventListener('click',(e)=>onVerseClick(v.n, e));
     wrap.appendChild(span);
   });
+  if(p.copyright){
+    const c=document.createElement('div');
+    c.style.cssText='margin-top:18px;padding-top:12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.5';
+    c.textContent=p.copyright;
+    wrap.appendChild(c);
+  }
 }
 function onVerseClick(n, e){
   // if a highlighter (non-erase) was just used via swatch? We use simple model:
