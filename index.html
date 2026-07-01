@@ -144,6 +144,11 @@
   .biblebar .btn{padding:10px 18px}
   .builder-note{font-size:12.5px;color:var(--muted);margin:12px 2px 0;line-height:1.5}
   .builder-note em{color:var(--burgundy);font-style:normal;font-weight:600}
+  .pcard .art img.artimg{width:100%;height:100%;object-fit:cover;display:block}
+  .imgwrap{border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#efe7d6}
+  .imgwrap img{width:100%;display:block}
+  .imgcap{font-size:11px;color:var(--muted);margin-top:6px;text-align:center;font-style:italic;line-height:1.4}
+  img.sessionhero{width:100%;height:200px;object-fit:cover;display:block;background:#efe7d6}
 
   /* ---------- Notes & community ---------- */
   .list{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
@@ -456,6 +461,26 @@ const ART = {
   manger:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#1f2547"/><path d="M120 28 l4 14 14 4 -14 4 -4 14 -4 -14 -14 -4 14 -4z" fill="#f4d77a"/><line x1="124" y1="58" x2="124" y2="120" stroke="#f4d77a" stroke-width="2" opacity="0.5"/><rect y="172" width="500" height="48" fill="#3a2f1c"/><path d="M212 162 l40 -22 40 22 -10 34 -60 0z" fill="#a9885c"/><ellipse cx="252" cy="150" rx="34" ry="10" fill="#caa56b"/><ellipse cx="252" cy="146" rx="30" ry="9" fill="#e7d3a1"/><circle cx="252" cy="142" r="9" fill="#ffe9c2"/></svg>`,
   embrace:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#f0e6cf"/><circle cx="424" cy="46" r="24" fill="#f4d77a"/><rect y="162" width="500" height="58" fill="#cbb389"/><path d="M40 162 q120 -42 236 0" stroke="#b59b6f" stroke-width="6" fill="none" stroke-dasharray="2 11"/><circle cx="252" cy="108" r="14" fill="#caa56b"/><rect x="240" y="120" width="24" height="44" rx="10" fill="#7a2f3a"/><circle cx="282" cy="110" r="13" fill="#e3b58a"/><rect x="272" y="122" width="20" height="42" rx="9" fill="#34315e"/><path d="M254 118 q16 -5 26 2" stroke="#7a2f3a" stroke-width="5" fill="none" stroke-linecap="round"/></svg>`,
   dove:`<svg class="illus" viewBox="0 0 500 220"><rect width="500" height="220" fill="#eaf2f0"/><circle cx="250" cy="108" r="72" fill="#fff" opacity="0.45"/><path d="M206 122 q30 -42 72 -20 q-10 10 -28 12 q26 6 40 -2 q-16 27 -54 22 q-24 -3 -30 -34z" fill="#fff" stroke="#ccd9d6"/><circle cx="224" cy="112" r="2.6" fill="#2b2420"/><path d="M280 100 l24 -8" stroke="#c79a3e" stroke-width="2"/><circle cx="308" cy="90" r="4" fill="#2f6f6a"/><circle cx="299" cy="98" r="3.5" fill="#2f6f6a"/></svg>`,
+};
+
+/* Public-domain classic art (Wikimedia Commons) for passages + characters */
+const IMAGES = {
+  genesis1:{url:'https://upload.wikimedia.org/wikipedia/commons/7/7e/Creation_of_Light.png', credit:'Gustave Doré — The Creation of Light'},
+  jonah1:{url:'https://upload.wikimedia.org/wikipedia/commons/9/9f/Dore_jonah_whale.jpg', credit:'Gustave Doré — Jonah and the Whale'},
+  jonah:{url:'https://upload.wikimedia.org/wikipedia/commons/9/9f/Dore_jonah_whale.jpg', credit:'Gustave Doré — Jonah and the Whale'},
+  luke2:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_%281622%29.jpg/960px-Gerard_van_Honthorst_-_Adoration_of_the_Shepherds_%281622%29.jpg', credit:'Gerard van Honthorst — Adoration of the Shepherds (1622)'},
+  luke15:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Rembrandt_Harmensz_van_Rijn_-_Return_of_the_Prodigal_Son_-_Google_Art_Project.jpg/960px-Rembrandt_Harmensz_van_Rijn_-_Return_of_the_Prodigal_Son_-_Google_Art_Project.jpg', credit:'Rembrandt — The Return of the Prodigal Son'},
+  john4:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Lavinia_Fontana_Christ_and_the_Samaritan_Woman_at_the_Well.jpg/960px-Lavinia_Fontana_Christ_and_the_Samaritan_Woman_at_the_Well.jpg', credit:'Lavinia Fontana — Christ and the Samaritan Woman'},
+  samaritan:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Lavinia_Fontana_Christ_and_the_Samaritan_Woman_at_the_Well.jpg/960px-Lavinia_Fontana_Christ_and_the_Samaritan_Woman_at_the_Well.jpg', credit:'Lavinia Fontana — Christ and the Samaritan Woman'},
+  psalm23:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Bernhard_Plockhorst_-_Good_Shephard.jpg/960px-Bernhard_Plockhorst_-_Good_Shephard.jpg', credit:'Bernhard Plockhorst — The Good Shepherd'},
+  david:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Caravaggio_-_David_with_the_Head_of_Goliath_-_Vienna.jpg/960px-Caravaggio_-_David_with_the_Head_of_Goliath_-_Vienna.jpg', credit:'Caravaggio — David with the Head of Goliath'},
+  moses:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Rembrandt_-_Moses_with_the_Ten_Commandments_-_Google_Art_Project.jpg/960px-Rembrandt_-_Moses_with_the_Ten_Commandments_-_Google_Art_Project.jpg', credit:'Rembrandt — Moses with the Ten Commandments'},
+  ruth:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg/960px-Julius_Schnorr_von_Carolsfeld-_Ruth_im_Feld_des_Boaz.jpg', credit:'Julius Schnorr von Carolsfeld — Ruth in the Field of Boaz'},
+  esther:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Esther_before_Ahasuerus%2C_Franciszek_Smuglewicz%2C_1778.jpg/960px-Esther_before_Ahasuerus%2C_Franciszek_Smuglewicz%2C_1778.jpg', credit:'Franciszek Smuglewicz — Esther before Ahasuerus (1778)'},
+  mary:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/The_Annunciation%2C_Philadelphia_Museum_of_Art%2C_W1899-1-1-pma%2C_by_Henry_Ossawa_Tanner.jpg/960px-The_Annunciation%2C_Philadelphia_Museum_of_Art%2C_W1899-1-1-pma%2C_by_Henry_Ossawa_Tanner.jpg', credit:'Henry Ossawa Tanner — The Annunciation'},
+  paul:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Conversion_on_the_Way_to_Damascus-Caravaggio_%28c.1600-1%29.jpg/960px-Conversion_on_the_Way_to_Damascus-Caravaggio_%28c.1600-1%29.jpg', credit:'Caravaggio — The Conversion of Saint Paul'},
+  peter:{url:'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Rembrandt_Christ_in_the_Storm_on_the_Lake_of_Galilee.jpg/960px-Rembrandt_Christ_in_the_Storm_on_the_Lake_of_Galilee.jpg', credit:'Rembrandt — Christ in the Storm on the Sea of Galilee'},
+  abraham:{url:'https://upload.wikimedia.org/wikipedia/commons/4/4f/After_Rembrandt_-_Sacrifice_of_Isaac_-_Kress_Foundation.jpg', credit:'After Rembrandt — The Sacrifice of Isaac'},
 };
 
 /* =========================================================
@@ -799,7 +824,7 @@ function renderLibrary(){
     const p = PASSAGES[key];
     const el = document.createElement('div');
     el.className='pcard';
-    el.innerHTML = `<div class="art">${ART[p.artKey]||''}</div>
+    el.innerHTML = `<div class="art">${IMAGES[key] ? `<img class="artimg" loading="lazy" src="${IMAGES[key].url}" alt="">` : (ART[p.artKey]||'')}</div>
       <div class="meta"><div class="tag">${p.tag}</div><h3>${p.ref}</h3><p>${p.blurb}</p></div>`;
     el.addEventListener('click',()=>openReader(key));
     g.appendChild(el);
@@ -972,14 +997,15 @@ function showInsight(n){
 
   let curated;
   if(I){
+    const img = IMAGES[state.passage];
     let visual = '';
     if(I.mapActive && I.mapActive.length){
       visual = `<div class="sec"><div class="lbl">${icon('map')} Where it happened</div>${mapSVG(I.mapActive)}${I.mapCaption?`<div class="mapcaption">${I.mapCaption}</div>`:''}</div>`;
-    } else if(I.art){
-      visual = `<div class="sec"><div class="lbl">${icon('pic')} Picture it</div>${ART[I.art]||''}</div>`;
     }
     let artExtra='';
-    if(I.mapActive && I.mapActive.length && I.art){
+    if(img){
+      artExtra = `<div class="sec"><div class="lbl">${icon('pic')} Picture it</div><div class="imgwrap"><img loading="lazy" src="${img.url}" alt="${escapeHTML(img.credit)}"></div><div class="imgcap">${img.credit} · public domain</div></div>`;
+    } else if(I.art){
       artExtra = `<div class="sec"><div class="lbl">${icon('pic')} Picture it</div>${ART[I.art]||''}</div>`;
     }
     const xrefs = I.xrefs.map(x=>`<span class="xref" title="${x[1]}">${x[0]}</span>`).join('');
@@ -1625,7 +1651,9 @@ async function generateSession(){
   }
   const data=currentSessionData();
   if(!data){ toast(builder.mode==='character'?'Pick a character first 🧍':'Choose or type a reference'); return; }
-  renderSession(data, badges, false);
+  const imgKey = builder.mode==='character' ? builder.charKey : (builder.freeText ? null : builder.pickKey);
+  const withImg = (imgKey && IMAGES[imgKey]) ? {...data, _img:IMAGES[imgKey]} : data;
+  renderSession(withImg, badges, false);
   document.getElementById('sessionOut').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -1689,6 +1717,7 @@ function renderSession(d, badges, isSaved){
       <h2>${d.title}</h2>
       <div class="badges">${badges.map(b=>`<span class="badge">${b}</span>`).join('')}</div>
     </div>
+    ${d._img ? `<img class="sessionhero" loading="lazy" src="${d._img.url}" alt="${escapeHTML(d._img.credit)}"><div class="imgcap" style="margin:7px 14px 0">${d._img.credit} · public domain</div>` : ''}
     <div class="sbody">
       ${warn}
       <div class="sblock"><div class="h">${icon('spark')} Big idea</div><p class="bigidea">${d.bigIdea}</p></div>
