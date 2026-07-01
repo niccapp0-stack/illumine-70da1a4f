@@ -247,9 +247,10 @@
 
 <div class="modal-bg" id="nameModal">
   <div class="modal">
-    <h3>Who's studying?</h3>
-    <p>Pop in your name so your shared reflections are labelled. It's just the two of you here.</p>
+    <h3>Set up your shared study</h3>
+    <p>Your <strong>name</strong> labels what you share. The <strong>shared key</strong> is a secret word you <em>both</em> type the same — it privately encrypts your notes so only the two of you can ever read them. Pick something you'll both remember; if you forget it, saved reflections can't be recovered.</p>
     <input id="nameInput" placeholder="Your name (e.g. Nic)" autocomplete="off"/>
+    <input id="passInput" type="password" placeholder="Shared secret key (both use the same one)" autocomplete="off"/>
     <button class="btn primary" id="nameSave" style="width:100%">Start studying ✨</button>
   </div>
 </div>
@@ -667,6 +668,37 @@ const SB_URL = 'https://hcqrkctlopstntkmizio.supabase.co';
 const SB_KEY = 'sb_publishable_MnYaoko7ZLzPiBnxYXL81Q_ThcvDvMn';
 const getAuthor = ()=> localStorage.getItem('ill_author')||'';
 const setAuthor = v => localStorage.setItem('ill_author', v);
+const getPass = ()=> localStorage.getItem('ill_pass')||'';
+const setPass = v => v ? localStorage.setItem('ill_pass', v) : localStorage.removeItem('ill_pass');
+
+/* ---- end-to-end encryption of reflections (shared passphrase) ---- */
+let AESKEY = null;
+async function deriveKey(pass){
+  if(!pass || !(window.crypto && crypto.subtle)) return null;
+  const te=new TextEncoder();
+  const base=await crypto.subtle.importKey('raw', te.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt:te.encode('illumine-v1'), iterations:120000, hash:'SHA-256'},
+    base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+async function encx(text){
+  if(!AESKEY || text==null || text==='') return text;
+  try{
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv}, AESKEY, new TextEncoder().encode(text)));
+    const buf=new Uint8Array(12+ct.length); buf.set(iv); buf.set(ct,12);
+    let s=''; for(const b of buf) s+=String.fromCharCode(b);
+    return 'enc:'+btoa(s);
+  }catch(e){ return text; }
+}
+async function decx(blob){
+  if(typeof blob!=='string' || !blob.startsWith('enc:')) return blob;
+  if(!AESKEY) return '🔒 locked — enter the shared key to read';
+  try{
+    const raw=Uint8Array.from(atob(blob.slice(4)), c=>c.charCodeAt(0));
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:raw.slice(0,12)}, AESKEY, raw.slice(12));
+    return new TextDecoder().decode(pt);
+  }catch(e){ return '🔒 locked — different key'; }
+}
 function colorFor(name){ const cs=['#7a2f3a','#2f6f6a','#4a467f','#c79a3e','#34315e','#8a5a2b']; let s=0; for(const c of (name||'x')) s+=c.charCodeAt(0); return cs[s%cs.length]; }
 function viewActive(id){ const v=document.getElementById(id); return v&&v.classList.contains('active'); }
 function setSync(on){ const d=document.getElementById('syncDot'); if(d) d.classList.toggle('on', !!on); }
@@ -692,7 +724,7 @@ const cloud = {
     if(!sb) return;
     const {data,error}=await sb.from('illumine_notes').select('*').eq('author',getAuthor()).order('updated_at',{ascending:false});
     if(error||!data) return;
-    LS.notes = data.map(r=>({passage:r.passage,verse:r.verse,ref:r.ref,vtext:r.vtext,text:r.body,ts:new Date(r.updated_at).getTime()}));
+    LS.notes = await Promise.all(data.map(async r=>({passage:r.passage,verse:r.verse,ref:r.ref,vtext:r.vtext,text:await decx(r.body),ts:new Date(r.updated_at).getTime()})));
     if(viewActive('notes')) renderNotes();
     if(viewActive('reader')) renderScripture();
   },
@@ -709,13 +741,13 @@ const cloud = {
     const {data,error}=await sb.from('illumine_insights').select('*').order('created_at',{ascending:false});
     if(error||!data) return;
     const me=getAuthor();
-    LS.comm = data.map(r=>({id:r.id,ref:r.ref,vtext:r.vtext,body:r.body,who:r.author,likes:r.likes,amen:r.amen,mine:r.author===me,color:colorFor(r.author),ts:new Date(r.created_at).getTime()}));
+    LS.comm = await Promise.all(data.map(async r=>({id:r.id,ref:r.ref,vtext:r.vtext,body:await decx(r.body),who:r.author,likes:r.likes,amen:r.amen,mine:r.author===me,color:colorFor(r.author),ts:new Date(r.created_at).getTime()})));
     if(viewActive('community')) renderCommunity();
   },
-  async pushNote(row){ if(!sb) return; try{ await sb.from('illumine_notes').upsert(row,{onConflict:'author,passage,verse'}); }catch(e){} },
+  async pushNote(row){ if(!sb) return; try{ row={...row, body:await encx(row.body)}; await sb.from('illumine_notes').upsert(row,{onConflict:'author,passage,verse'}); }catch(e){} },
   async delNote(passage,verse){ if(!sb) return; try{ await sb.from('illumine_notes').delete().match({author:getAuthor(),passage,verse}); }catch(e){} },
   async pushHighlight(row){ if(!sb) return; try{ await sb.from('illumine_highlights').upsert(row,{onConflict:'author,passage,verse'}); }catch(e){} },
-  async pushInsight(row){ if(!sb) return; try{ await sb.from('illumine_insights').insert(row); this.pullInsights(); }catch(e){} },
+  async pushInsight(row){ if(!sb) return; try{ row={...row, body:await encx(row.body)}; await sb.from('illumine_insights').insert(row); this.pullInsights(); }catch(e){} },
   async react(id,field,val){ if(!sb||!id) return; try{ await sb.from('illumine_insights').update({[field]:val}).eq('id',id); }catch(e){} },
 };
 
@@ -927,7 +959,8 @@ How to answer:
 - Warm, plain language a brand-new or less-confident reader can follow. Define any churchy or technical terms.
 - Ground every claim in the text itself or in well-established history/scholarship. When something is interpretation or a scholarly guess, say so plainly ("Many scholars think…", "One way to read this…"). NEVER invent quotes, verses, dates, or facts.
 - You are a study aid — never a replacement for Scripture, prayer, the Holy Spirit, a pastor, or a church. Where helpful, gently point the reader back to the text and to wise teachers.
-- Respect sincere Christian faith and the range of Christian traditions; where faithful Christians differ, note it rather than taking sides.
+- Respect sincere Christian faith and the range of Christian traditions. When a verse or question is read differently across faithful traditions (e.g. baptism, communion/the Lord's Supper, end times, predestination vs free will, spiritual gifts, women in ministry, the age of the earth), SAY SO and briefly lay out the main views side by side — never present one denomination's reading as the single "biblical" answer or take sides yourself.
+- If the reader expresses personal crisis, despair, self-harm, or abuse, set the study aside: respond with warmth and compassion, gently urge them to reach a real, trusted person or a helpline right away, and be clear this app can't provide the care they deserve.
 - Be concise: at most 2–4 short paragraphs. Give your final answer directly, without narrating your reasoning.`;
 }
 
@@ -979,9 +1012,26 @@ function renderAICompanion(n){
   document.getElementById('aiForget').addEventListener('click',e=>{ e.preventDefault(); setKey(''); toast('Disconnected'); renderAICompanion(n); });
 }
 
+function crisisText(t){
+  const s=(' '+(t||'').toLowerCase()+' ');
+  const p=["kill myself","killing myself","end my life","ending my life","want to die","wanna die","take my life","suicid","self harm","self-harm","hurt myself","hurting myself","harm myself","harming myself","cut myself","can't go on","cant go on","don't want to be alive","dont want to be alive","no reason to live","better off dead","end it all","being abused","he hits me","she hits me","hurts me at home"];
+  return p.some(k=>s.includes(k));
+}
+function crisisMessage(){
+  return `<div style="line-height:1.65;font-size:14px">
+    <p style="margin:0 0 8px"><strong>It sounds like you may be carrying something really heavy right now.</strong> Please reach out to a real person who can be with you in it — you deserve that, and it's more than any app should try to give.</p>
+    <p style="margin:0 0 8px"><strong>In Australia, any time, day or night:</strong><br>
+    • <strong>Lifeline</strong> — call <strong>13 11 14</strong> (or text 0477 13 11 14)<br>
+    • <strong>Beyond Blue</strong> — <strong>1300 22 4636</strong><br>
+    • <strong>13YARN</strong> (Aboriginal &amp; Torres Strait Islander) — <strong>13 92 76</strong><br>
+    • In immediate danger — call <strong>000</strong></p>
+    <p style="margin:0">Please also reach out to your pastor, your spouse, or someone you trust. You are loved, and you are not alone.</p>
+  </div>`;
+}
 async function askCompanion(n, question){
   const ans = document.getElementById('aiAnswer');
   ans.classList.add('show');
+  if(crisisText(question)){ ans.innerHTML = crisisMessage(); return; }
   ans.innerHTML = `<span class="spin"></span> Thinking…`;
   try{
     const text = await callClaude({ system: companionSystem(state.passage), user: question });
@@ -1467,7 +1517,7 @@ function renderSessionLoading(label){
 }
 
 async function aiSession(mode, label){
-  const sys = "You are a careful Bible study curriculum writer for the Illumine app. Produce accurate, source-grounded study sessions in line with historic Christian teaching. NEVER invent Scripture references, quotes, dates, or facts; where something is interpretation or debated, mark it gently. Keep language warm and accessible to brand-new readers. Output ONLY a single valid JSON object — no markdown fences, no commentary before or after.";
+  const sys = "You are a careful Bible study curriculum writer for the Illumine app. Produce accurate, source-grounded study sessions in line with historic Christian teaching. NEVER invent Scripture references, quotes, dates, or facts; where something is interpretation or debated, mark it gently and note that faithful Christians read it differently rather than presenting one tradition as the definitive view. Keep language warm and accessible to brand-new readers. Output ONLY a single valid JSON object — no markdown fences, no commentary before or after.";
   const user = `Create a Bible study session for the ${mode} "${label}".`+
     ` Audience: ${builder.setting}. Length: ${builder.length}. Emphasis: ${builder.focus}.`+
     ` Return ONLY JSON with exactly these fields:\n`+
@@ -1601,16 +1651,20 @@ function renderSaved(){
 function showNameModal(){
   const m=document.getElementById('nameModal');
   document.getElementById('nameInput').value = getAuthor();
+  document.getElementById('passInput').value = getPass();
   m.classList.add('show');
   setTimeout(()=>document.getElementById('nameInput').focus(),50);
 }
 function hideNameModal(){ document.getElementById('nameModal').classList.remove('show'); }
-function saveName(){
+async function saveName(){
   const v=document.getElementById('nameInput').value.trim();
+  const p=document.getElementById('passInput').value;
   if(!v){ toast('Please enter a name'); return; }
-  setAuthor(v);
+  if(!p || p.length<4){ toast('Choose a shared key (4+ characters)'); return; }
+  setAuthor(v); setPass(p);
   document.getElementById('nameLabel').textContent=v;
   hideNameModal();
+  AESKEY = await deriveKey(p);
   cloud.init();
 }
 document.getElementById('nameSave').addEventListener('click',saveName);
@@ -1620,9 +1674,9 @@ document.getElementById('nameChip').addEventListener('click',showNameModal);
 renderLibrary();
 openReader('psalm23'); go('library');
 
-if(getAuthor()){
+if(getAuthor() && getPass()){
   document.getElementById('nameLabel').textContent=getAuthor();
-  cloud.init();
+  deriveKey(getPass()).then(k=>{ AESKEY=k; cloud.init(); });
 } else {
   showNameModal();
 }
